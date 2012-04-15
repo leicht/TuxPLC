@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<jnlp codebase="$$codebase" href="launch.jnlp" spec="1.0+">
+    <information>
+        <title>IHM Moulon</title>
+        <vendor>LEICHT</vendor>
+        <homepage href="http://appframework.dev.java.net"/>
+        <description>ihm du moulin</description>
+        <description kind="short">IHM Moulon</description>
+    </information>
+<update check="always"/>
+    <resources>
+<j2se version="1.5+"/>
+<jar href="ihm.jar" main="true"/>
+    <jar href="lib/appframework-1.0.3.jar"/>
+<jar href="lib/swing-worker-1.1.jar"/>
+<jar href="lib/mysql-connector-java-5.1.6-bin.jar"/>
+</resources>
+    <application-desc main-class="ihm.IhmApp">
+    </application-desc>
+</jnlp>

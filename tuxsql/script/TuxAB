@@ -1,0 +1,60 @@
+#! /bin/sh
+#
+#
+
+PATH=/bin:/usr/bin:/sbin:/usr/sbin
+EXEC=/usr/sbin/tuxab2
+DAEMON="$EXEC -d"
+NAME="TuxAB2"
+
+test -f $EXEC || exit 0
+ALIVE=`ps axw | grep "$DAEMON *\$" | awk '{print $1}'`
+#ALIVE=`pidof $EXEC`
+echo "PID of $NAME = $ALIVE"
+WAIT=30
+
+case "$1" in
+  status)
+    if [ -n "$ALIVE" ];
+    then
+    	echo "running (PID=$ALIVE)"
+    	exit "1"
+    else
+    	echo "not running"
+    	exit "0"
+    fi
+    ;;
+  start)
+    echo -n "Starting $NAME"
+    $DAEMON
+    echo "."
+    ;;
+  stop)
+    echo -n "Stopping $NAME"
+    if [ -n "$ALIVE" ];
+    then
+	kill $ALIVE
+      echo "."
+    else
+      echo ". $NAME not running !"
+    fi
+    ;;
+  restart)
+    echo -n "Restarting $NAME"
+    if [ -n "$ALIVE" ];
+    then
+	kill $ALIVE
+	sleep 1
+	$DAEMON
+      echo "."
+    else
+      echo ". $NAME not running!  Not attempting restart."
+    fi
+    ;;
+  *)
+    echo "Usage: $0 {start|stop|restart|status}"
+    exit 1
+    ;;
+esac
+
+exit 0

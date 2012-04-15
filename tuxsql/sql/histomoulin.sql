@@ -1,0 +1,174 @@
+-- MySQL dump 10.13  Distrib 5.1.49, for debian-linux-gnu (i486)
+--
+-- Host: localhost    Database: histosql
+-- ------------------------------------------------------
+-- Server version	5.1.49-3
+
+/*!40101 SET @OLD_CHARACTER_SET_CLIENT=@@CHARACTER_SET_CLIENT */;
+/*!40101 SET @OLD_CHARACTER_SET_RESULTS=@@CHARACTER_SET_RESULTS */;
+/*!40101 SET @OLD_COLLATION_CONNECTION=@@COLLATION_CONNECTION */;
+/*!40101 SET NAMES utf8 */;
+/*!40103 SET @OLD_TIME_ZONE=@@TIME_ZONE */;
+/*!40103 SET TIME_ZONE='+00:00' */;
+/*!40014 SET @OLD_UNIQUE_CHECKS=@@UNIQUE_CHECKS, UNIQUE_CHECKS=0 */;
+/*!40014 SET @OLD_FOREIGN_KEY_CHECKS=@@FOREIGN_KEY_CHECKS, FOREIGN_KEY_CHECKS=0 */;
+/*!40101 SET @OLD_SQL_MODE=@@SQL_MODE, SQL_MODE='NO_AUTO_VALUE_ON_ZERO' */;
+/*!40111 SET @OLD_SQL_NOTES=@@SQL_NOTES, SQL_NOTES=0 */;
+
+--
+-- Table structure for table `DEFINITION`
+--
+
+DROP TABLE IF EXISTS `DEFINITION`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!40101 SET character_set_client = utf8 */;
+CREATE TABLE `DEFINITION` (
+  `ID` int(11) NOT NULL AUTO_INCREMENT,
+  `TAGNAME` varchar(30) NOT NULL DEFAULT '',
+  `TAG_DEFINITION` varchar(100) DEFAULT NULL,
+  `ADDRESS` varchar(40) DEFAULT NULL,
+  `DATA_TYPE` varchar(10) DEFAULT NULL,
+  `PLCNAME` varchar(30) DEFAULT NULL,
+  `TIME_SAMPLE` smallint(6) DEFAULT NULL,
+  `TIME_REFRESH` int(6) DEFAULT NULL,
+  `TIME_CLEANING` smallint(6) DEFAULT '3',
+  `HYSTERESIS` smallint(6) DEFAULT NULL,
+  `I_MIN` double DEFAULT NULL,
+  `I_MAX` double DEFAULT NULL,
+  `O_MIN` double DEFAULT NULL,
+  `O_MAX` double DEFAULT NULL,
+  `TAG_UNIT` varchar(20) DEFAULT NULL,
+  `RECORDING` tinyint(4) DEFAULT '0',
+  `READING` tinyint(4) DEFAULT '0',
+  `SNAPSHOT_VALUE` double DEFAULT NULL,
+  `SNAPSHOT_TIME` datetime DEFAULT NULL,
+  `WRITE_VALUE` double DEFAULT NULL,
+  `DIGITAL` tinyint(1) DEFAULT '0',
+  `TAG_SYSTEM` char(3) DEFAULT NULL,
+  PRIMARY KEY (`ID`),
+  UNIQUE KEY `second` (`TAGNAME`)
+) ENGINE=MyISAM AUTO_INCREMENT=377 DEFAULT CHARSET=latin1;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `DEFINITION`
+--
+
+LOCK TABLES `DEFINITION` WRITE;
+/*!40000 ALTER TABLE `DEFINITION` DISABLE KEYS */;
+INSERT INTO `DEFINITION` VALUES (20,'Seconde','Seconde SLC500','S2:42','','slc500_1',30,900,30,0,0,50,0,50,'sec',0,1,5,'2012-03-25 11:07:19',NULL,0,'DF1'),(22,'Minute','Minute dans SLC500','S2:41','','slc500_1',59,500,3,0,0,59,0,59,'min',0,1,40,'2012-03-25 11:07:19',NULL,0,'DF1'),(359,'LVE1','sortie regulateur -100/100 (read only)','N10:3',NULL,'SLC500_1',30,900,30,1,-100,100,-100,100,'Pourcent',1,1,-1,'2012-03-25 11:07:19',NULL,0,'DF1'),(361,'LT1','Niveau LT1 0-16383','N10:0',NULL,'SLC500_1',30,900,700,0,0,16383,0,100,'Niveau',1,1,12947,'2012-03-25 11:07:19',NULL,0,'DF1'),(26,'TempSS2','Temperature Sous-Sol en DF1','F8:0','','slc500_1',30,900,30,0,0,50,0,50,'Â°C',1,1,0,'2012-03-25 11:07:20',NULL,0,'DF1'),(364,'LV1','Sortie regulateur RW 0-16383','N10:1',NULL,'slc500_1',30,900,3,0,0,16383,0,100,'pourcent',1,1,8075,'2012-03-25 11:07:20',NULL,0,'DF1'),(363,'Heure','Heure SLC500','S2:40',NULL,'SLC500_1',60,500,3,1,0,23,0,23,'H',0,1,3,'2012-03-25 11:07:20',NULL,0,'DF1'),(362,'SP_LIC1','Consigne regulateur LIC1 (0-16383)','N11:2',NULL,'SLC500_1',30,900,3,1,0,16383,0,100,'Niveau',1,1,13000,'2012-03-25 11:07:19',NULL,0,'DF1'),(360,'AUTOMANU_LIC1','Auto Manu LIC1 (1=manu)','N11:0/1',NULL,'SLC500_1',30,900,3,1,0,1,10,20,'TOR',1,1,0,'2012-03-25 11:07:19',NULL,0,'DF1'),(365,'TACTIONVD','Tempo action sur vanne decharge','T4:5.PRE',NULL,'slc500_1',30,900,3,0,0,100,0,100,'sec',1,1,99,'2012-03-25 11:07:19',NULL,0,'DF1'),(366,'COMPTEURVDO','Compteur action OUVERTURE sur vanne decharge','C5:0.ACC',NULL,'slc500_1',30,900,3,0,0,1000,0,1000,'nbre',1,1,24546,'2012-03-25 11:07:19',NULL,0,'DF1'),(367,'COMPTEURVDF','Compteur action FERMETURE sur vanne decharge','C5:1.ACC',NULL,'slc500_1',30,900,3,0,0,1000,0,1000,'nbre',1,1,16611,'2012-03-25 11:07:19',NULL,0,'DF1'),(368,'FREQ','Frequence','788','','PM500',30,300,30,0,4000,6000,40,60,'Hz',1,1,5044,'2012-03-25 11:07:19',NULL,0,'MDB'),(369,'EA_TOT','Total Energie Active','856','','PM500',300,900,30,1,0,100000,0,100,'Mwh',1,1,46443,'2012-03-25 11:07:19',NULL,0,'MDB'),(370,'PA_TOT','Puissance Active Totale','790','','PM500',30,60,30,0,0,1300,0,13,'Kwh',1,1,426,'2012-03-25 11:07:19',NULL,0,'MDB'),(372,'Iph2','intensitÃ© phase 2','770','','PM500',30,60,30,0,0,24000,0,24,'A',1,1,160,'2012-03-25 11:07:19',NULL,0,'MDB'),(371,'Iph1','intensitÃ© phase 1','768','','PM500',30,60,30,0,0,24000,0,24,'A',1,1,9215,'2012-03-25 11:07:19',NULL,0,'MDB'),(373,'Iph3','intensitÃ© phase 3','772','','PM500',30,60,30,0,0,24000,0,24,'A',1,1,10020,'2012-03-25 11:07:19',NULL,0,'MDB'),(374,'Uph1','Tension phase1','776','','PM500',30,60,30,0,0,45000,0,450,'V',1,1,37635,'2012-03-25 11:07:19',NULL,0,'MDB'),(375,'Uph2','Tension phase2','778','','PM500',30,60,30,0,0,45000,0,450,'V',1,1,39556,'2012-03-25 11:07:19',NULL,0,'MDB'),(376,'Uph3','Tension phase3','780','','PM500',30,60,30,0,0,45000,0,450,'V',1,1,38004,'2012-03-25 11:07:19',NULL,0,'MDB');
+/*!40000 ALTER TABLE `DEFINITION` ENABLE KEYS */;
+UNLOCK TABLES;
+
+--
+-- Table structure for table `DF1`
+--
+
+DROP TABLE IF EXISTS `DF1`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!40101 SET character_set_client = utf8 */;
+CREATE TABLE `DF1` (
+  `PLCNAME` varchar(30) NOT NULL DEFAULT '',
+  `PLC_TTY` varchar(20) NOT NULL DEFAULT '/dev/ttyS0',
+  `PLC_SPEED` int(11) NOT NULL DEFAULT '9600',
+  `PLC_PARITY` tinyint(4) NOT NULL DEFAULT '0',
+  `PLC_DATA` tinyint(4) NOT NULL DEFAULT '8',
+  `PLC_STOP` tinyint(4) NOT NULL DEFAULT '1',
+  `PLC_ENABLE` tinyint(4) NOT NULL DEFAULT '0',
+  PRIMARY KEY (`PLCNAME`)
+) ENGINE=MyISAM DEFAULT CHARSET=latin1;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `DF1`
+--
+
+LOCK TABLES `DF1` WRITE;
+/*!40000 ALTER TABLE `DF1` DISABLE KEYS */;
+INSERT INTO `DF1` VALUES ('slc500_1','/dev/ttyS0',9600,0,8,1,1),('microlx','/dev/ttyS1',38400,0,8,1,1);
+/*!40000 ALTER TABLE `DF1` ENABLE KEYS */;
+UNLOCK TABLES;
+
+--
+-- Table structure for table `MODBUS`
+--
+
+DROP TABLE IF EXISTS `MODBUS`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!40101 SET character_set_client = utf8 */;
+CREATE TABLE `MODBUS` (
+  `PLCNAME` varchar(30) NOT NULL DEFAULT '',
+  `PLC_PATH` varchar(20) NOT NULL DEFAULT '',
+  `PLC_TTY` varchar(20) NOT NULL DEFAULT '/dev/ttyS0',
+  `PLC_SPEED` int(11) NOT NULL DEFAULT '9600',
+  `PLC_PARITY` varchar(5) DEFAULT 'none',
+  `PLC_DATA` tinyint(4) NOT NULL DEFAULT '8',
+  `PLC_STOP` tinyint(4) NOT NULL DEFAULT '1',
+  `DEVICE_ID` smallint(6) NOT NULL DEFAULT '1',
+  `PLC_ENABLE` tinyint(4) NOT NULL DEFAULT '0',
+  PRIMARY KEY (`PLCNAME`)
+) ENGINE=MyISAM DEFAULT CHARSET=latin1;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `MODBUS`
+--
+
+LOCK TABLES `MODBUS` WRITE;
+/*!40000 ALTER TABLE `MODBUS` DISABLE KEYS */;
+INSERT INTO `MODBUS` VALUES ('PM500','','/dev/ttyS1',19200,'none',8,1,1,1);
+/*!40000 ALTER TABLE `MODBUS` ENABLE KEYS */;
+UNLOCK TABLES;
+/*!40103 SET TIME_ZONE=@OLD_TIME_ZONE */;
+
+/*!40101 SET SQL_MODE=@OLD_SQL_MODE */;
+/*!40014 SET FOREIGN_KEY_CHECKS=@OLD_FOREIGN_KEY_CHECKS */;
+/*!40014 SET UNIQUE_CHECKS=@OLD_UNIQUE_CHECKS */;
+/*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;
+/*!40101 SET CHARACTER_SET_RESULTS=@OLD_CHARACTER_SET_RESULTS */;
+/*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
+/*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
+
+-- Dump completed on 2012-03-25 11:07:20
+-- MySQL dump 10.13  Distrib 5.1.49, for debian-linux-gnu (i486)
+--
+-- Host: localhost    Database: histosql
+-- ------------------------------------------------------
+-- Server version	5.1.49-3
+
+/*!40101 SET @OLD_CHARACTER_SET_CLIENT=@@CHARACTER_SET_CLIENT */;
+/*!40101 SET @OLD_CHARACTER_SET_RESULTS=@@CHARACTER_SET_RESULTS */;
+/*!40101 SET @OLD_COLLATION_CONNECTION=@@COLLATION_CONNECTION */;
+/*!40101 SET NAMES utf8 */;
+/*!40103 SET @OLD_TIME_ZONE=@@TIME_ZONE */;
+/*!40103 SET TIME_ZONE='+00:00' */;
+/*!40014 SET @OLD_UNIQUE_CHECKS=@@UNIQUE_CHECKS, UNIQUE_CHECKS=0 */;
+/*!40014 SET @OLD_FOREIGN_KEY_CHECKS=@@FOREIGN_KEY_CHECKS, FOREIGN_KEY_CHECKS=0 */;
+/*!40101 SET @OLD_SQL_MODE=@@SQL_MODE, SQL_MODE='NO_AUTO_VALUE_ON_ZERO' */;
+/*!40111 SET @OLD_SQL_NOTES=@@SQL_NOTES, SQL_NOTES=0 */;
+
+--
+-- Table structure for table `HISTO`
+--
+
+DROP TABLE IF EXISTS `HISTO`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!40101 SET character_set_client = utf8 */;
+CREATE TABLE `HISTO` (
+  `ID` int(11) NOT NULL DEFAULT '0',
+  `TIMEVALUE` datetime NOT NULL DEFAULT '0000-00-00 00:00:00',
+  `DATAVALUE` double DEFAULT NULL,
+  PRIMARY KEY (`ID`,`TIMEVALUE`)
+) ENGINE=MyISAM DEFAULT CHARSET=latin1;
+/*!40101 SET character_set_client = @saved_cs_client */;
+/*!40103 SET TIME_ZONE=@OLD_TIME_ZONE */;
+
+/*!40101 SET SQL_MODE=@OLD_SQL_MODE */;
+/*!40014 SET FOREIGN_KEY_CHECKS=@OLD_FOREIGN_KEY_CHECKS */;
+/*!40014 SET UNIQUE_CHECKS=@OLD_UNIQUE_CHECKS */;
+/*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;
+/*!40101 SET CHARACTER_SET_RESULTS=@OLD_CHARACTER_SET_RESULTS */;
+/*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
+/*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
+
+-- Dump completed on 2012-03-25 11:08:38

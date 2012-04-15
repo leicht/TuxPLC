@@ -1,0 +1,63 @@
+#!/bin/bash
+# param1=alias
+# param2=tag
+# param3=designation
+# param4=destinataire
+# param5=copieCC
+
+# ./alarme_machine chimiques Marche_M9 "Machine 9" stephane.leicht@foxinfo.fr stephane.jeanne@gmail.com
+
+MYPATH="/var/alarme/"
+TAG=$2
+DESTINATAIRE=$4
+CC=$5
+FICHIERON=$MYPATH$TAG".on"
+FICHIEROFF=$MYPATH$TAG".off"
+VALEUR=`/usr/local/bin/readtag -a $1 $TAG`
+
+if [[ $VALEUR == ERR ]]
+then
+  echo "Erreur de lecture de readtag"
+  exit 1
+else
+  # si �al �1 alors Machine OK
+  if [ "$VALEUR" -eq 1 ]
+  then
+   # on supprime le fichier memoire OFF
+  	if [ -f "$FICHIEROFF" ]
+  	then
+  		rm $FICHIEROFF
+  	fi
+  	if [ ! -f "$FICHIERON" ]
+  	then
+  		BODY="Mail automatique du serveur $HOSTNAME :\n $3 : Marche\n"
+  		printf "$BODY"
+  		touch $FICHIERON
+  		if [ -n "$CC" ]
+		then
+  			printf "$BODY" | mail -s "Marche $3" $DESTINATAIRE -c $CC
+		else
+			printf "$BODY" | mail -s "Marche $3" $DESTINATAIRE
+		fi
+  	fi
+  # Machine  à l'arrêt	
+  else
+   # on supprime le fichier memoire ON
+  	if [ -f "$FICHIERON" ]
+  	then
+  		rm $FICHIERON
+  	fi
+  	if [ ! -f "$FICHIEROFF" ]
+  	then
+  		BODY="Mail automatique du serveur $HOSTNAME :\n $3 : Arrêt\n"
+  		printf "$BODY"
+  		touch $FICHIEROFF
+  		if [ -n "$CC" ]
+		then
+  			printf "$BODY" | mail -s "Arrêt $3" $DESTINATAIRE -c $CC 
+		else
+			printf "$BODY" | mail -s "Arrêt $3" $DESTINATAIRE
+		fi
+  	fi		
+  fi
+fi

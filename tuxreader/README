@@ -1,0 +1,8 @@
+Pour tester en mode console :
+echo '[flex]myfloat!' | netcat -q 10 localhost 17560
+
+BUG :
+Lorsque on demande un tag (tag) qui existe, on obtient une reponse normale.
+Ensuite si on redemande un tag qui n'existe pas avec une orthographe suplémentaire (tag6) alors on obtient la valeur de tag sans erreur.
+
+Probleme de retour ligne sur l'affichage de la liste des plcs
