@@ -1,0 +1,8 @@
+{
+	"tag" : {
+		"tagname":	"level1",
+		"plcname": "flex",
+		"action": "write",
+		"value" : 3.14
+	}
+}

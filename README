@@ -1,7 +1,7 @@
 /***************************************************************************
  *  Copyright (C) 2006                                                     *
- *  Author : Stephane JEANNE	stephane.jeanne@gmail.com                  *
- *           Stephane LEICHT    stephane.leicht@foxinfo.fr                 *
+ *  Author : Stephane JEANNE	stephane.jeanne at gmail.com                  *
+ *           Stephane LEICHT    stephane at leicht.fr                 *
  *                                                                         *
  *  This program is free software: you can redistribute it and/or modify   *
  *  it under the terms of the GNU General Public License as published by   * 
@@ -21,6 +21,7 @@ TuxPLC :
 tuxeip : Ethernet/IP Library
 tuxsql : datalogging software
 tuxreader : daemon Ethernet/IP
+tuxtag : daemon for write and read tag in plc
 readtag : small program used with bash script and Ethernet/IP PLC
 
 modbus : library used by tuxsql
