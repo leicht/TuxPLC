@@ -108,7 +108,6 @@ static const char *parse_number(cJSON *item,const char *num)
 	}
 
 	n=sign*n*pow(10.0,(scale+subscale*signsubscale));	/* number = +/- number.fraction * 10^+/- exponent */
-	
 	item->valuedouble=n;
 	item->valueint=(int)n;
 	item->type=cJSON_Number;
@@ -275,6 +274,7 @@ static char *print_string_ptr(const char *str)
 static char *print_string(cJSON *item)	{return print_string_ptr(item->valuestring);}
 
 char *get_string(cJSON *item)	{return get_string_ptr(item->valuestring);}
+double get_double(cJSON *item)	{return item->valuedouble;}
 
 /* Predeclare these prototypes. */
 static const char *parse_value(cJSON *item,const char *value);

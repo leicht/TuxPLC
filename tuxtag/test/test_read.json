@@ -1,6 +1,6 @@
 {
 	"tag" : {
-		"tagname":	"temp_ext",
+		"tagname": "temp_ext",
 		"plcname": "flex",
 		"action": "read"
 	}

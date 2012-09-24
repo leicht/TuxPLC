@@ -1,6 +1,6 @@
 /***************************************************************************
  *  Copyright (C) 2006 http://www.foxinfo.fr                               *
- *  Author : Stephane JEANNE    stephane.jeanne@gmail.com                  *
+ *  Author : Stephane JEANNE    stephane.jeanne at gmail.com               *
  *                                                                         *
  *  This program is free software: you can redistribute it and/or modify   *
  *  it under the terms of the GNU General Public License as published by   * 
@@ -312,13 +312,14 @@ int ParsePath(char *strpath,char Ip[],char Path[])
 	} else return(0);
 }
 
-int ParseRequest(char *Alias,char *Tag,char *writevalue, char *requete)
-{
+int ParseRequest(char *Alias,char *Tag,char *writevalue, char *requete) {
 	int writequery=FALSE;
 	char *varvalue;
+	double FValue=12.34;
+	char Action[6];
 	Log(LOG_DEBUG,"Entering ParseRequest (%s)[%i]\n",requete,strlen(requete));
 	cJSON *json = cJSON_Parse(requete);
-	cJSON *tag = cJSON_GetObjectItem(json,"tag");
+	cJSON *tag = cJSON_GetObjectItem(json,"tag");// object tag
 	if (!tag) {
 		return ERROR;
 	}
@@ -329,6 +330,20 @@ int ParseRequest(char *Alias,char *Tag,char *writevalue, char *requete)
 	if (cJSON_GetObjectItem(tag,"plcname")) {
 		strcpy(Alias,get_string(cJSON_GetObjectItem(tag,"plcname")));
 		Log(LOG_DEBUG,"Result ParseRequest plcname=%s\n",Alias);
+	}
+	if (cJSON_GetObjectItem(tag,"action")) {
+		strcpy(Action,get_string(cJSON_GetObjectItem(tag,"action")));
+		Log(LOG_DEBUG,"Result ParseRequest action=%s\n",Action);
+		if (strcmp(Action,"write")==0) {
+			Log(LOG_DEBUG,"Write !!!\n");
+			if (cJSON_GetObjectItem(tag,"writevalue")) {
+				Log(LOG_DEBUG,cJSON_Print(cJSON_GetObjectItem(tag,"writevalue")));
+				FValue = (double) cJSON_GetObjectItem(tag,"writevalue")->valuedouble;
+				printf("valeur:%f\n",FValue);
+				Log(LOG_DEBUG,"Result ParseRequest value=%lf\n",FValue);
+				Log(LOG_DEBUG,"Result ParseRequest value=%d\n",cJSON_GetObjectItem(tag,"writevalue")->type);
+			}
+		}
 	}
 	cJSON_Delete(json);
 	//strcpy(varAlias,cJSON_GetObjectItem(tag,"plcname")->valuestring);
