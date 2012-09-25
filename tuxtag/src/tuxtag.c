@@ -1,5 +1,5 @@
 /***************************************************************************
- *  Copyright (C) 2006 http://www.foxinfo.fr                               *
+ *  Copyright (C) 2006                                                     *
  *  Author : Stephane JEANNE    stephane.jeanne at gmail.com               *
  *                                                                         *
  *  This program is free software: you can redistribute it and/or modify   *
@@ -315,7 +315,7 @@ int ParsePath(char *strpath,char Ip[],char Path[])
 int ParseRequest(char *Alias,char *Tag,char *writevalue, char *requete) {
 	int writequery=FALSE;
 	char *varvalue;
-	double FValue=12.34;
+	double FValue;
 	char Action[6];
 	Log(LOG_DEBUG,"Entering ParseRequest (%s)[%i]\n",requete,strlen(requete));
 	cJSON *json = cJSON_Parse(requete);
@@ -335,13 +335,11 @@ int ParseRequest(char *Alias,char *Tag,char *writevalue, char *requete) {
 		strcpy(Action,get_string(cJSON_GetObjectItem(tag,"action")));
 		Log(LOG_DEBUG,"Result ParseRequest action=%s\n",Action);
 		if (strcmp(Action,"write")==0) {
-			Log(LOG_DEBUG,"Write !!!\n");
-			if (cJSON_GetObjectItem(tag,"writevalue")) {
-				Log(LOG_DEBUG,cJSON_Print(cJSON_GetObjectItem(tag,"writevalue")));
-				FValue = (double) cJSON_GetObjectItem(tag,"writevalue")->valuedouble;
-				printf("valeur:%f\n",FValue);
-				Log(LOG_DEBUG,"Result ParseRequest value=%lf\n",FValue);
-				Log(LOG_DEBUG,"Result ParseRequest value=%d\n",cJSON_GetObjectItem(tag,"writevalue")->type);
+			if (cJSON_GetObjectItem(tag,"value")) {
+                            cJSON *Wvalue = cJSON_GetObjectItem(tag,"value");
+				FValue = cJSON_Get_double(Wvalue);
+				Log(LOG_DEBUG,"Result ParseRequest value=%f\n",FValue);
+				//Log(LOG_DEBUG,"Result ParseRequest value=%d\n",Wvalue->type);
 			}
 		}
 	}
@@ -872,7 +870,7 @@ if (level<=debuglevel)
 	}
 	va_end(list);
 }
-int Reply(int fd,char *format,...)
+/*int Reply(int fd,char *format,...)
 {	va_list list;
 	va_start(list,format);//NULL
 	char str[MAXBUFFERSIZE];
@@ -882,7 +880,30 @@ int Reply(int fd,char *format,...)
 	int result=write(fd,str,strlen(str));
 	Log(LOG_DEBUG,"-> %s (socket : %d, %d bytes)\n",str,fd,result);
 	return(result);
+}*/
+
+int ReplyJSON(int fd, char *tagname, char *plcname, char *status, char * error, double value) {
+    cJSON *root, *tag;
+    char *str;
+    //memset(str,0,MAXBUFFERSIZE);
+    root=cJSON_CreateObject();
+    cJSON_AddItemToObject(root, "tag", tag=cJSON_CreateObject());
+    cJSON_AddStringToObject(tag,"tagname",tagname);
+    cJSON_AddStringToObject(tag,"plcname",plcname);
+    cJSON_AddStringToObject(tag,"status",status);
+    if (strcmp(error,"")!=0)
+        cJSON_AddStringToObject(tag,"error",error);
+    if (strcmp(status,"success")==0)
+        cJSON_AddNumberToObject(tag,"value",value);
+    str = cJSON_Print(root);	
+    cJSON_Delete(root);	
+    printf("%s\n",str);	
+    int result=write(fd,str,strlen(str));
+    Log(LOG_DEBUG,"-> %s (socket : %d, %d bytes)\n",str,fd,result);
+    free(str);
+    return(result);
 }
+
 int main (int argc,char *argv[])
 {	
 	// Gestion des signaux
@@ -1233,11 +1254,13 @@ void Traite(CLIENT *client)
 			if ((time(NULL)-tag->Time_Value)<UPDATE_RATE)
 			{
 				Log(LOG_DEBUG,"\t=Reading buffered value for Tag %s\n",TagName);
-				Reply(client->FD,"[%s]%s=%f\n",plc->PlcName,TagName,tag->Value);
+				ReplyJSON(client->FD,TagName,plc->PlcName,"success","",tag->Value);
 			} else 
 			{
-				if (ReadTag(tag)>0) Reply(client->FD,"[%s]%s=%f\n",plc->PlcName,TagName,tag->Value);
-					else Reply(client->FD,"[%s]%s=Erreur\n",plc->PlcName,TagName);
+				if (ReadTag(tag)>0) 
+                                    ReplyJSON(client->FD,TagName,plc->PlcName,"success","",tag->Value);
+				else 
+                                    ReplyJSON(client->FD,TagName,plc->PlcName,"error","Error",0);
 			}
 			//Reply(client->FD,"TuxReader : %s (Path : %s) Tag : %s\n",plc->PlcName,plc->PlcPath,TagName);
 		} else
@@ -1249,7 +1272,7 @@ void Traite(CLIENT *client)
 		}
 	} else
 	{
-		Reply(client->FD,"%s=Request error\n",client->InBuffer.data);
+		ReplyJSON(client->FD,TagName,PlcName,"error",client->InBuffer.data,0);
 	}
 	client->InBuffer.size=0;
 }

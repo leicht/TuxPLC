@@ -274,7 +274,8 @@ static char *print_string_ptr(const char *str)
 static char *print_string(cJSON *item)	{return print_string_ptr(item->valuestring);}
 
 char *get_string(cJSON *item)	{return get_string_ptr(item->valuestring);}
-double get_double(cJSON *item)	{return item->valuedouble;}
+double cJSON_Get_double(cJSON *item) {return item->valuedouble;}
+int cJSON_Get_int(cJSON *item) {return item->valueint;}
 
 /* Predeclare these prototypes. */
 static const char *parse_value(cJSON *item,const char *value);

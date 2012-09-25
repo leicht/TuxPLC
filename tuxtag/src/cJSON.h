@@ -62,6 +62,8 @@ typedef struct cJSON_Hooks {
 extern void cJSON_InitHooks(cJSON_Hooks* hooks);
 
 extern char *get_string(cJSON *item);
+extern int cJSON_Get_int(cJSON *item);
+extern double cJSON_Get_double(cJSON *item);
 
 /* Supply a block of JSON, and this returns a cJSON object you can interrogate. Call cJSON_Delete when finished. */
 extern cJSON *cJSON_Parse(const char *value);

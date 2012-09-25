@@ -1,7 +1,7 @@
 {
 	"tag" : {
 		"tagname": "VFLOAT",
-		"writevalue" : 3.141,
+		"value" : 3.14159265,
 		"plcname": "flex",
 		"action": "write"
 	}
