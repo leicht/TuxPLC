@@ -1,7 +1,7 @@
 {
 	"tag" : {
-		"tagname": "VFLOAT",
-		"value" : 3.14159265,
+		"tagname": "VINT",
+		"value" : 16,
 		"plcname": "flex",
 		"action": "write"
 	}

@@ -115,7 +115,7 @@ int mainprog(void);
 //int Logger(PLC *PLCs,int Plc_count,TAG *TAGs,int Tag_count);
 int GetIP(char *path,char *serveur);
 int ParsePath(char *strpath,char Ip[],char Path[]);
-int ParseRequest(char *Alias,char *Tag,char *writevalue, char *requete);
+int ParseRequest(char *Alias,char *Tag,double *pWriteValue, char *requete, char *pIsWrite);
 
 void Affiche(int fd,char *listname);
 void Affiche_TAGs(int fd);
@@ -139,6 +139,7 @@ CLIENT *FindClient(int fd,LISTE *CLIENT_List);
 PLC *FindPLC(char *PlcName,LISTE *PLC_List);
 TAG *FindTag(char *TagName,char *PlcName,LISTE *TAG_List);
 int ReadTag(TAG *tag);
+int WriteTag(TAG *tag, float *writeValue );
 
 void Traite(CLIENT *client);
 

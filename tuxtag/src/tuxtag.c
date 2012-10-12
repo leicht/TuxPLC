@@ -33,6 +33,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <fcntl.h>
+#include <syslog.h>
 
 #include <tuxeip/TuxEip.h>
 #include <sutil/ChainList.h>
@@ -312,11 +313,11 @@ int ParsePath(char *strpath,char Ip[],char Path[])
 	} else return(0);
 }
 
-int ParseRequest(char *Alias,char *Tag,char *writevalue, char *requete) {
-	int writequery=FALSE;
+int ParseRequest(char *Alias,char *Tag,double *pWriteValue, char *requete, char *pIsWrite) {
 	char *varvalue;
 	double FValue;
 	char Action[6];
+        *pIsWrite = FALSE;
 	Log(LOG_DEBUG,"Entering ParseRequest (%s)[%i]\n",requete,strlen(requete));
 	cJSON *json = cJSON_Parse(requete);
 	cJSON *tag = cJSON_GetObjectItem(json,"tag");// object tag
@@ -336,28 +337,15 @@ int ParseRequest(char *Alias,char *Tag,char *writevalue, char *requete) {
 		Log(LOG_DEBUG,"Result ParseRequest action=%s\n",Action);
 		if (strcmp(Action,"write")==0) {
 			if (cJSON_GetObjectItem(tag,"value")) {
-                            cJSON *Wvalue = cJSON_GetObjectItem(tag,"value");
-				FValue = cJSON_Get_double(Wvalue);
-				Log(LOG_DEBUG,"Result ParseRequest value=%f\n",FValue);
-				//Log(LOG_DEBUG,"Result ParseRequest value=%d\n",Wvalue->type);
-			}
+                                cJSON *Wvalue = cJSON_GetObjectItem(tag,"value");
+                                FValue = cJSON_Get_double(Wvalue);
+                                *pWriteValue = FValue;
+                                *pIsWrite = TRUE; 
+                                Log(LOG_DEBUG,"Result ParseRequest value=%f\n",FValue);
+        		}
 		}
 	}
 	cJSON_Delete(json);
-	//strcpy(varAlias,cJSON_GetObjectItem(tag,"plcname")->valuestring);
-	//if (strchr(requete,61)!=NULL) {
-	//	writequery=TRUE;
-	//}
-	//if ((Open==NULL)||(Close==NULL)) return ERROR;
-	//varAlias = strsep (&requete, "[");//first delimiter
-	//varAlias = strsep (&requete, delimiters);
-	//varTag = strsep (&requete, delimiters);
-	//if (writequery) {
-	//	varvalue = strsep (&requete, delimiters);
-	//	strcpy(writevalue, varvalue);
-	//}
-	//strcpy(Alias,varAlias);
-	//strcpy(Tag,varTag);
 	return SUCCESS;
 }
 
@@ -419,7 +407,7 @@ TAG *FindTag(char *TagName,char *PlcName,LISTE *TAG_List)
 	if (elt!=NULL) do
 	{
 		TAG *tag=elt->Data;
-		if ((!strncasecmp(TagName,tag->TagName,strlen(tag->TagName)))&&(tag->Plc!=NULL)&&
+		if ((strcasecmp(TagName,tag->TagName)==0)&&(tag->Plc!=NULL)&&
 			(!strncasecmp(PlcName,tag->Plc->PlcName,strlen(tag->Plc->PlcName)))) return(tag);
 	} while ((elt=GetNext(TAG_List,elt))!=NULL);
 	return(NULL);	
@@ -823,6 +811,156 @@ int ReadTag(TAG *tag)
 	if (result) tag->Time_Value=time(NULL);
 	return(result);
 }
+
+int WriteTag(TAG *tag, float *writeValue ) {
+	int result=ERROR;
+        int IValue;
+	DHP_Header dhp={0,0,0,0};
+	if (tag->Plc->Session==NULL)
+	{
+		if (!BuildSession(tag->Plc)) return(0);
+	}
+	if (tag->Plc->Connection==NULL)
+	{
+		if (!BuildConnection(tag->Plc)) return(0);
+	}
+	Log(LOG_DEBUG,"WriteTag : %s (%p / %p)\n",tag->TagName,tag->Plc->Session,tag->Plc->Connection);
+	switch (tag->Plc->PlcType)
+	{
+		case PLC5:
+		case SLC500:
+			{ PLC_Read *data;
+				dhp.Dest_adress=tag->Plc->Node;
+				if (tag->Plc->NetWork) // DHP
+                                    data=ReadPLCData(tag->Plc->Session,tag->Plc->Connection,&dhp,NULL,0,tag->Plc->PlcType,tns++,tag->TagName,1);
+				else 
+                                    data=ReadPLCData(tag->Plc->Session,tag->Plc->Connection,NULL,NULL,0,tag->Plc->PlcType,tns++,tag->TagName,1);
+				//Log(LOG_DEBUG,"Reading : %s on %s (%s)\n",TAGs[i].TagName,(TAGs[i].Plc)->PlcName,s_err_msg);
+				if (data!=NULL)
+				{
+                                    if (tag->Plc->NetWork) { // DHP
+					if (WritePLCData(tag->Plc->Session,tag->Plc->Connection,&dhp,NULL,0,tag->Plc->PlcType,tns++,tag->TagName,data->type,writeValue,1)>Error)
+                                            result=SUCCESS;
+                                        else
+                                            result=ERROR;
+                                    } else {
+                                        if (WritePLCData(tag->Plc->Session,tag->Plc->Connection,NULL,NULL,0,tag->Plc->PlcType,tns++,tag->TagName,data->type,writeValue,1)>Error)
+                                            result=SUCCESS;
+                                        else
+                                            result=ERROR;
+                                    }
+                                    /* pour remplacer au dessus lorsque le temps
+                                    switch(DataType)
+			{ //TODO one bit b3:0/4
+				case PLC_BIT:
+				case PLC_INTEGER:
+				{
+					IValue=atoi(writeValue);
+					if (Plc->NetWork) // DHP
+						if (WritePLCData(Session,Connection,&dhp,NULL,0,Plc->PlcType,tns++,TagName,DataType,&IValue,1)>Error)
+							result=SUCCESS;
+						else
+							result=ERROR;
+					else
+					if (WritePLCData(Session,Connection,NULL,NULL,0,Plc->PlcType,tns++,TagName,DataType,&IValue,1)>Error)
+							result=SUCCESS;
+						else
+							result=ERROR;
+					Log(LOG_DEBUG,"[WriteTag] %s on %s = %x (%s) [%x]\n",TagName,Plc->PlcName,IValue,cip_err_msg,result);
+				}break;
+				case PLC_FLOATING:
+				{
+					FValue=atof(writeValue);
+					if (Plc->NetWork) // DHP
+						if (WritePLCData(Session,Connection,&dhp,NULL,0,Plc->PlcType,tns++,TagName,DataType,&FValue,1)>Error)
+							result=SUCCESS;
+					else
+						result=ERROR;
+					else
+						if (WritePLCData(Session,Connection,NULL,NULL,0,Plc->PlcType,tns++,TagName,DataType,&FValue,1)>Error)
+							result=SUCCESS;
+					else
+						result=ERROR;
+					Log(LOG_DEBUG,"[WriteTag] %s on %s = %f (%s) [%x]\n",TagName,Plc->PlcName,FValue,cip_err_msg,result);
+				}break;
+				default:
+				{
+					Log(LOG_WARNING,"[WriteTag] Datatype unknow for : %s\n",TagName);
+					result=ERROR;
+				}
+				break;
+			} 
+                                     */
+                                    free(data);
+				} else
+				{
+					Log(LOG_WARNING,"ReadPLCData error on tag %s: (%d) %s\n",tag->TagName,cip_errno,cip_err_msg);
+					result= ERROR;
+				}
+			}; break;
+		case LGX:
+		{
+			LGX_Read *data=ReadLgxData(tag->Plc->Session,tag->Plc->Connection,tag->TagName,1);
+			if (data!=NULL)
+			{
+                            switch(data->type)
+                            {
+                                    case LGX_BOOL:
+                                    {
+                                            IValue=(int) *writeValue;
+                                            if (IValue!=0) IValue=1;
+                                            if (WriteLgxData(tag->Plc->Session,tag->Plc->Connection,tag->TagName,data->type,&IValue,1)>0)
+                                                    result=SUCCESS;
+                                            else
+                                                    result=ERROR;
+                                            Log(LOG_DEBUG,"[WriteTag] %s on %s = %x (%s) [%x]\n",tag->TagName,tag->Plc->PlcName,IValue,cip_err_msg,result);
+                                    }break;
+                                    case LGX_BITARRAY:
+                                    {
+                                            //
+                                    }break;
+                                    case LGX_SINT:
+                                    case LGX_INT:
+                                    case LGX_DINT:
+                                    {
+                                            IValue=(int) *writeValue;
+                                            if (WriteLgxData(tag->Plc->Session,tag->Plc->Connection,tag->TagName,data->type,&IValue,1)>0)
+                                                    result=SUCCESS;
+                                            else
+                                                    result=ERROR;
+                                            Log(LOG_DEBUG,"[WriteTag] %s on %s = %x (%s) [%x]\n",tag->TagName,tag->Plc->PlcName,IValue,cip_err_msg,result);
+                                    }break;
+                                    case LGX_REAL:
+                                    {
+                                            if (WriteLgxData(tag->Plc->Session,tag->Plc->Connection,tag->TagName,data->type,writeValue,1)>0)
+                                                    result=SUCCESS;
+                                            else
+                                                    result=ERROR;
+                                            Log(LOG_DEBUG,"[WriteTag] %s on %s = %f (%s) [%x]\n",tag->TagName,tag->Plc->PlcName,*writeValue,cip_err_msg,result);
+                                    }break;
+                                    default:
+                                    {
+                                            Log(LOG_WARNING,"[WriteTag] Datatype unknow for : %s\n",tag->TagName);
+                                            result=ERROR;
+                                    }
+                                    break;
+                            }
+                            free(data);
+			} else 
+			{
+				Log(LOG_WARNING,"ReadLgxData error on tag : %s (%s)\n",tag->TagName,cip_err_msg);
+				result=ERROR;
+			}
+		}
+                break;
+		default:
+                    Log(LOG_WARNING,"Plc type unknow for : %s\n",tag->Plc->PlcName);
+		break;
+	}
+	//if (result) tag->Time_Value=time(NULL);
+	return(result);    
+}
+
 void SigHand(int num)
 { 
 	//
@@ -870,7 +1008,7 @@ if (level<=debuglevel)
 	}
 	va_end(list);
 }
-/*int Reply(int fd,char *format,...)
+int Reply(int fd,char *format,...)
 {	va_list list;
 	va_start(list,format);//NULL
 	char str[MAXBUFFERSIZE];
@@ -880,7 +1018,7 @@ if (level<=debuglevel)
 	int result=write(fd,str,strlen(str));
 	Log(LOG_DEBUG,"-> %s (socket : %d, %d bytes)\n",str,fd,result);
 	return(result);
-}*/
+}
 
 int ReplyJSON(int fd, char *tagname, char *plcname, char *status, char * error, double value) {
     cJSON *root, *tag;
@@ -896,8 +1034,8 @@ int ReplyJSON(int fd, char *tagname, char *plcname, char *status, char * error, 
     if (strcmp(status,"success")==0)
         cJSON_AddNumberToObject(tag,"value",value);
     str = cJSON_Print(root);	
-    cJSON_Delete(root);	
-    printf("%s\n",str);	
+    cJSON_Delete(root);		
+    strcat(str,"\n");
     int result=write(fd,str,strlen(str));
     Log(LOG_DEBUG,"-> %s (socket : %d, %d bytes)\n",str,fd,result);
     free(str);
@@ -1210,17 +1348,19 @@ void Traite(CLIENT *client)
 {
 	char PlcName[30];
 	char TagName[50];
-	char writevalue[20];
+	double writeValue = 0;
+        float FValue;
 	char requete[MAXBUFFERSIZE];
+        char isWrite = FALSE;
 	memset(PlcName,0,sizeof(PlcName));
 	memset(TagName,0,sizeof(TagName));
-	memset(writevalue,0,sizeof(writevalue));
+	//memset(writevalue,0,sizeof(writevalue));
 	memset(requete,0,sizeof(requete));	
 	memcpy(requete,client->InBuffer.data,client->InBuffer.size);
 	Log(LOG_DEBUG,"Entering Traite for %p (%s)[%i]\n",client,requete,client->InBuffer.size);
-	if (ParseRequest(PlcName,TagName,writevalue,requete)== SUCCESS)
+	if (ParseRequest(PlcName,TagName,&writeValue,requete, &isWrite)== SUCCESS)
 	{
-		Log(LOG_DEBUG,"Traite for %s@%s=%s \n", TagName, PlcName, writevalue);
+		Log(LOG_DEBUG,"Traite for %s@%s=%f Write:%d \n", TagName, PlcName, writeValue, isWrite);
 		if(strncasecmp(PlcName,"@",1)==0)
 		{
 			Affiche(client->FD,TagName);
@@ -1251,17 +1391,28 @@ void Traite(CLIENT *client)
 					return;
 				}
 			}
-			if ((time(NULL)-tag->Time_Value)<UPDATE_RATE)
-			{
-				Log(LOG_DEBUG,"\t=Reading buffered value for Tag %s\n",TagName);
-				ReplyJSON(client->FD,TagName,plc->PlcName,"success","",tag->Value);
-			} else 
-			{
-				if (ReadTag(tag)>0) 
+                        if (isWrite==FALSE) {
+                            if ((time(NULL)-tag->Time_Value)<UPDATE_RATE)
+                            {
+                                    Log(LOG_DEBUG,"\t=Reading buffered value for Tag %s\n",TagName);
                                     ReplyJSON(client->FD,TagName,plc->PlcName,"success","",tag->Value);
-				else 
-                                    ReplyJSON(client->FD,TagName,plc->PlcName,"error","Error",0);
-			}
+                            } else 
+                            {
+                                    if (ReadTag(tag)>0) 
+                                        ReplyJSON(client->FD,TagName,plc->PlcName,"success","",tag->Value);
+                                    else 
+                                        ReplyJSON(client->FD,TagName,plc->PlcName,"error","Error",0);
+                            }
+                        } else {
+                            FValue = (float) writeValue;
+                            if (WriteTag(tag,&FValue)>ERROR) { 
+                                if (ReadTag(tag)>0) 
+                                        ReplyJSON(client->FD,TagName,plc->PlcName,"success","",tag->Value);
+                                    else 
+                                        ReplyJSON(client->FD,TagName,plc->PlcName,"error","Error ReadTag after write",0);
+                            } else 
+                                ReplyJSON(client->FD,TagName,plc->PlcName,"error","Error WriteTag",0);
+                        }
 			//Reply(client->FD,"TuxReader : %s (Path : %s) Tag : %s\n",plc->PlcName,plc->PlcPath,TagName);
 		} else
 		{

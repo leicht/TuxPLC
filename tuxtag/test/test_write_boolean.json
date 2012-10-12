@@ -1,0 +1,8 @@
+{
+	"tag" : {
+		"tagname": "VBOOL",
+		"value" : 1,
+		"plcname": "flex",
+		"action": "write"
+	}
+}
