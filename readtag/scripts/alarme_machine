@@ -5,7 +5,7 @@
 # param4=destinataire
 # param5=copieCC
 
-# ./alarme_machine chimiques Marche_M9 "Machine 9" stephane.leicht@foxinfo.fr stephane.jeanne@gmail.com
+# ./alarme_machine chimiques Marche_M9 "Machine 9" stephane.leicht@gmail.com stephane.jeanne@gmail.com
 
 MYPATH="/var/alarme/"
 TAG=$2

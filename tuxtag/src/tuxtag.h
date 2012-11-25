@@ -1,6 +1,7 @@
 /***************************************************************************
- *  Copyright (C) 2006 http://www.foxinfo.fr                               *
+ *  Copyright (C) 2006                                                     *
  *  Author : Stephane JEANNE    stephane.jeanne@gmail.com                  *
+ *           Stephane LEICHT    stephane.leicht@gmail.com                  *
  *                                                                         *
  *  This program is free software: you can redistribute it and/or modify   *
  *  it under the terms of the GNU General Public License as published by   * 
@@ -115,7 +116,7 @@ int mainprog(void);
 //int Logger(PLC *PLCs,int Plc_count,TAG *TAGs,int Tag_count);
 int GetIP(char *path,char *serveur);
 int ParsePath(char *strpath,char Ip[],char Path[]);
-int ParseRequest(char *Alias,char *Tag,double *pWriteValue, char *requete, char *pIsWrite);
+int ParseRequest(char *Alias,char *Tag,double *pWriteValue, char *requete, char *pIsWrite, int *timeRefresh);
 
 void Affiche(int fd,char *listname);
 void Affiche_TAGs(int fd);

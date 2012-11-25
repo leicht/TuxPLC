@@ -1,7 +1,7 @@
 /***************************************************************************
  *  Copyright (C) 2006                                                     *
  *  Author : Stephane JEANNE    stephane.jeanne at gmail.com               *
- *                                                                         *
+ *           Stephane LEICHT    stephane at leicht.fr                      *
  *  This program is free software: you can redistribute it and/or modify   *
  *  it under the terms of the GNU General Public License as published by   * 
  *  the Free Software Foundation, either version 3 of the License, or      *
@@ -313,9 +313,10 @@ int ParsePath(char *strpath,char Ip[],char Path[])
 	} else return(0);
 }
 
-int ParseRequest(char *Alias,char *Tag,double *pWriteValue, char *requete, char *pIsWrite) {
+int ParseRequest(char *Alias,char *Tag,double *pWriteValue, char *requete, char *pIsWrite, int *timeRefresh) {
 	char *varvalue;
 	double FValue;
+        int Itime;
 	char Action[6];
         *pIsWrite = FALSE;
 	Log(LOG_DEBUG,"Entering ParseRequest (%s)[%i]\n",requete,strlen(requete));
@@ -332,6 +333,14 @@ int ParseRequest(char *Alias,char *Tag,double *pWriteValue, char *requete, char 
 		strcpy(Alias,get_string(cJSON_GetObjectItem(tag,"plcname")));
 		Log(LOG_DEBUG,"Result ParseRequest plcname=%s\n",Alias);
 	}
+        if (cJSON_GetObjectItem(tag,"timerefresh")) {
+		cJSON *Wtime = cJSON_GetObjectItem(tag,"timerefresh");
+                Itime = cJSON_Get_int(Wtime);
+	} else {
+            Itime=0;
+        }
+        *timeRefresh = Itime;
+        Log(LOG_DEBUG,"Result ParseRequest timerefresh=%d\n",Itime);
 	if (cJSON_GetObjectItem(tag,"action")) {
 		strcpy(Action,get_string(cJSON_GetObjectItem(tag,"action")));
 		Log(LOG_DEBUG,"Result ParseRequest action=%s\n",Action);
@@ -1350,6 +1359,7 @@ void Traite(CLIENT *client)
 	char TagName[50];
 	double writeValue = 0;
         float FValue;
+        int Itime=0;//refresh time
 	char requete[MAXBUFFERSIZE];
         char isWrite = FALSE;
 	memset(PlcName,0,sizeof(PlcName));
@@ -1358,7 +1368,7 @@ void Traite(CLIENT *client)
 	memset(requete,0,sizeof(requete));	
 	memcpy(requete,client->InBuffer.data,client->InBuffer.size);
 	Log(LOG_DEBUG,"Entering Traite for %p (%s)[%i]\n",client,requete,client->InBuffer.size);
-	if (ParseRequest(PlcName,TagName,&writeValue,requete, &isWrite)== SUCCESS)
+	if (ParseRequest(PlcName,TagName,&writeValue,requete, &isWrite, &Itime)== SUCCESS)
 	{
 		Log(LOG_DEBUG,"Traite for %s@%s=%f Write:%d \n", TagName, PlcName, writeValue, isWrite);
 		if(strncasecmp(PlcName,"@",1)==0)
@@ -1392,7 +1402,7 @@ void Traite(CLIENT *client)
 				}
 			}
                         if (isWrite==FALSE) {
-                            if ((time(NULL)-tag->Time_Value)<UPDATE_RATE)
+                            if ((time(NULL)-tag->Time_Value)< Itime)
                             {
                                     Log(LOG_DEBUG,"\t=Reading buffered value for Tag %s\n",TagName);
                                     ReplyJSON(client->FD,TagName,plc->PlcName,"success","",tag->Value);

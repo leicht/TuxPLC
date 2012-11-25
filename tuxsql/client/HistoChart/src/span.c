@@ -1,6 +1,6 @@
 /***************************************************************************
- *  Copyright (C) 2006 http://www.foxinfo.fr                               *
- *  Author : Stephane LEICHT    stephane.leicht@foxinfo.fr                 *
+ *  Copyright (C) 2006                                                     *
+ *  Author : Stephane LEICHT    stephane.leicht@gmail.com                  *
  *                                                                         *
  *  This program is free software: you can redistribute it and/or modify   *
  *  it under the terms of the GNU General Public License as published by   * 

@@ -2,6 +2,7 @@
 	"tag" : {
 		"tagname": "VFLOAT",
 		"plcname": "flex",
-		"action": "read"
+		"action": "read",
+		"timerefresh" : 60
 	}
 }

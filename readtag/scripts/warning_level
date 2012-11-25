@@ -6,7 +6,7 @@
 # param5=destinataire
 # param6=copieCC
 #
-# ./warning_level chimiques _70LT01 95 "Niveau bas des cuves TUG" stephane.leicht@foxinfo.fr stephane.jeanne@gmail.com
+# ./warning_level chimiques _70LT01 95 "Niveau bas des cuves TUG" stephane.leicht@gmail.com stephane.jeanne@gmail.com
 #
 MYPATH="/var/alarme/"
 TAG=$2

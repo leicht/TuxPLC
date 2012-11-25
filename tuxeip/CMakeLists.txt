@@ -3,6 +3,7 @@ cmake_minimum_required(VERSION 2.6)
 #Déclaration du projet
 project(TuxEIP)
 set(LIBRARY_OUTPUT_PATH ./lib)
+SET( CMAKE_C_FLAGS "-fPIC")
 
 ADD_LIBRARY(tuxeip STATIC 
             src/AB.c

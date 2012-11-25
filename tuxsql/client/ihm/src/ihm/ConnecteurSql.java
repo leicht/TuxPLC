@@ -1,5 +1,5 @@
 /*
-Copyright 2010 Fox informatique http://www.foxinfo.fr
+Copyright 2010 
 Author: Stephane LEICHT stephane@leicht.fr
 
 This file is part of Metrologix.

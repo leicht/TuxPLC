@@ -1,5 +1,5 @@
 /***************************************************************************
- *  Copyright (C) 2006 http://www.foxinfo.fr                              *
+ *  Copyright (C) 2006                                                     *
  *  Author : Stephane JEANNE	stephane.jeanne@gmail.com                  *
  *                                                                         *
  *  This program is free software: you can redistribute it and/or modify   *
