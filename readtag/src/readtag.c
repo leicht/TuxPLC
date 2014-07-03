@@ -273,12 +273,11 @@ int Connect(PLC *Plc,char *TagName, char *responseValue)
 		{
 			if (WriteTag(Plc, Session, Connection, TagName,dataType)!=SUCCESS)
 				return ERROR; 
+			Log(LOG_DEBUG,"[Connect] %s [%s] %x (%p / %p)\n",TagName,writeValue,dataType,Session,Connection);
+			if (ReadTag(Plc, Session, Connection, TagName, &dataType, responseValue)!=SUCCESS)
+				return ERROR;
 		}
 	}
-	Log(LOG_DEBUG,"[Connect] %s [%s] %x (%p / %p)\n",TagName,writeValue,dataType,Session,Connection);
-	if (ReadTag(Plc, Session, Connection, TagName, &dataType, responseValue)!=SUCCESS)
-		return ERROR;
-	Log(LOG_DEBUG,"[Connect] %s [%s] %x (%p / %p)\n",TagName,writeValue,dataType,Session,Connection);
 	return result;
 }
 
