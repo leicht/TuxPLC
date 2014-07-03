@@ -94,7 +94,7 @@ if (level<=debuglevel)
 	{
 		if (debug==1)
 		{	char str[255];
-			if (format!="\n")
+			if (format[0]!='\n')
 			{
 				vsprintf(str,format,list);
 				printf("%ld : %s",time(NULL)-starttime,str);
@@ -174,7 +174,7 @@ int GetPlc(char *Alias,char *Aliasfile,PLC *plc)
 				if (!strncasecmp(Temp_Alias,Alias,strlen(Alias))) // find
 				{
 					Log(LOG_DEBUG,"%s = %s (%s,%s,%d)\n",Alias,Path,Type,NetWork,Node);
-					bzero(plc,sizeof(PLC));
+					memset(plc,0,sizeof(PLC));
 					strncpy(plc->PlcName,Temp_Alias,sizeof(plc->PlcName));
 					strncpy(plc->PlcPath,Path,sizeof(plc->PlcPath));
 					plc->PlcType=GetPlcType(Type);
