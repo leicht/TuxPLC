@@ -20,13 +20,20 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <errno.h>
-#include <unistd.h>
+#ifdef _MSC_VER
+	#include <io.h>
+#else
+	#include <unistd.h>
+#endif
 
 #ifdef _WIN32
-    #include <winsock2.h>
-		#define MAXFILEDESCRIPTORS FD_SETSIZE
-		#include <io.h>
-    //#define MSG_WAITALL 0
+	#include <winsock2.h>
+	#define MAXFILEDESCRIPTORS FD_SETSIZE
+	#ifdef __MINGW32__
+		#define MSG_WAITALL 8
+	#else
+		//#define MSG_WAITALL 0
+	#endif
 #else
 	#include <sys/socket.h>
 	#include <arpa/inet.h>
