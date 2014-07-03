@@ -21,7 +21,11 @@
 
 #include <time.h>
 #include <unistd.h>
-#include <syslog.h>
+#ifdef _WIN32
+	enum LOG_LEVELS {LOG_ALERT=1, LOG_CRIT, LOG_ERR, LOG_WARNING, LOG_NOTICE, LOG_INFO, LOG_DEBUG};
+#else
+	#include <syslog.h>
+#endif
 #include <sys/stat.h>
 #include <stdarg.h>
 #include <stdio.h>
@@ -29,6 +33,9 @@
 #include <errno.h>
 #include <stdlib.h>
 #include <signal.h>
+#ifdef __MINGW32__
+	#define SIGIO 29
+#endif
 
 #define LOG_TITLE "ReadTag"
 #define MAXPATHSIZE 100
@@ -97,12 +104,14 @@ if (level<=debuglevel)
 			if (format[0]!='\n')
 			{
 				vsprintf(str,format,list);
-				printf("%ld : %s",time(NULL)-starttime,str);
+				printf("%ld : %s",(long)(time(NULL)-starttime),str);
 			} else vprintf(format,list);
 		}
 		else
 		{ 
+#ifndef _WIN32
 			vsyslog(level,format,list);
+#endif
 		}
 	}
 	va_end(list);
