@@ -19,7 +19,14 @@
 #include <stdlib.h>
 #include <string.h>
 #include <errno.h>
-#include <unistd.h>
+#ifdef _MSC_VER
+	#include <io.h>
+#else
+	#include <unistd.h>
+#endif
+#ifdef _WIN32
+	#include <winsock2.h>
+#endif
 
 #include "Ethernet_IP.h"
 #include "SendData.h"
@@ -131,6 +138,9 @@ EXPORT void CloseSession(Eip_Session *session)
 {
 	CIPERROR(0,0,0);
 	close(session->sock);
+#ifdef _WIN32
+	WSACleanup();
+#endif
 	free(session);
 }
 EXPORT int _RegisterSession(Eip_Session *session)

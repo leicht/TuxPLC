@@ -29,7 +29,7 @@ extern "C"
 
 extern char _CIPEmptyBuff[512];
 
-#ifdef _Windows
+#ifdef _WIN32
     int _InitWSA(); //(WORD version);
 #endif
 
