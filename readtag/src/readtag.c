@@ -20,16 +20,15 @@
 #include <tuxeip/TuxEip.h>
 
 #include <time.h>
-#include <sys/wait.h>
 #include <unistd.h>
 #include <syslog.h>
 #include <sys/stat.h>
 #include <stdarg.h>
-#include <setjmp.h>
 #include <stdio.h>
 #include <string.h>
 #include <errno.h>
 #include <stdlib.h>
+#include <signal.h>
 
 #define LOG_TITLE "ReadTag"
 #define MAXPATHSIZE 100
