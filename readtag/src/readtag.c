@@ -329,7 +329,7 @@ int ReadTag(PLC *Plc, Eip_Session *Session, Eip_Connection *Connection, char *Ta
 						}
 					}break;
 					default:{
-						Log(LOG_WARNING,"[ReadTag] Datatype type unknow for : %s\n",TagName);
+						Log(LOG_WARNING,"[ReadTag] Datatype type unknown for : %s\n",TagName);
 						result=ERROR;
 					}
 					break;
@@ -408,7 +408,7 @@ int ReadTag(PLC *Plc, Eip_Session *Session, Eip_Connection *Connection, char *Ta
 			}
 		}; break;
 		default:{
-			Log(LOG_WARNING,"[ReadTag] Plc type unknow for : %s\n",Plc->PlcName);
+			Log(LOG_WARNING,"[ReadTag] Plc type unknown for : %s\n",Plc->PlcName);
 				result=ERROR;
 			}
 			break;
@@ -466,7 +466,7 @@ int WriteTag(PLC *Plc, Eip_Session *Session, Eip_Connection *Connection, char *T
 				}break;
 				default:
 				{
-					Log(LOG_WARNING,"[WriteTag] Datatype unknow for : %s\n",TagName);
+					Log(LOG_WARNING,"[WriteTag] Datatype unknown for : %s\n",TagName);
 					result=ERROR;
 				}
 				break;
@@ -513,7 +513,7 @@ int WriteTag(PLC *Plc, Eip_Session *Session, Eip_Connection *Connection, char *T
 				}break;
 				default:
 				{
-					Log(LOG_WARNING,"[WriteTag] Datatype unknow for : %s\n",TagName);
+					Log(LOG_WARNING,"[WriteTag] Datatype unknown for : %s\n",TagName);
 					result=ERROR;
 				}
 				break;
@@ -521,7 +521,7 @@ int WriteTag(PLC *Plc, Eip_Session *Session, Eip_Connection *Connection, char *T
 		}; break;
 		default:
 		{
-			Log(LOG_WARNING,"[WriteTag] Plc type unknow for : %s\n",Plc->PlcName);
+			Log(LOG_WARNING,"[WriteTag] Plc type unknown for : %s\n",Plc->PlcName);
 			result=ERROR;
 		}
 		break;
@@ -585,7 +585,7 @@ int main (int argc,char *argv[])
 				{
 					plc.NetWork=GetNetType(optarg);
 				};break;
-			case 'n': //Node adress
+			case 'n': //Node address
 				{
 					plc.Node=atoi(optarg);
 				};break;
@@ -593,7 +593,7 @@ int main (int argc,char *argv[])
 			case 'h':
 				{
 					printf("%s (Build on %s %s)\n",LOG_TITLE,__DATE__,__TIME__);
-					printf("usage: %s:[-d] [-l0-3] [-f Alias file] [-w Value] [-?,h] {-a alias || -p path -c Plc type -r network type -n node adress} var\n",argv[0]);
+					printf("usage: %s:[-d] [-l0-3] [-f Alias file] [-w Value] [-?,h] {-a alias || -p path -c Plc type -r network type -n node address} var\n",argv[0]);
 					printf("-d\tDebug mode to screen\n");
 					printf("-l{0..3}\t(default :1)\n");
 					printf("\t0\tLOG_ERR\n");
@@ -606,7 +606,7 @@ int main (int argc,char *argv[])
 					printf("-p\tPath \n");
 					printf("-c\tPlc type {LGX,PLC,SLC} (Default : LGX)\n");
 					printf("-r\tNetwork type {CNET,DHP_A,DHP_B} (Default : CNET)\n");
-					printf("-n\tNode adress (Default : 0)\n");
+					printf("-n\tNode address (Default : 0)\n");
 					return(0);
 				}break;
 			default:break;
