@@ -109,18 +109,18 @@ MR_Reply *_ExSendMRRequest(Eip_Session *session,MR_Request *request,int size,int
 	mrrep=_GetMRReply(reply);
 	if (mrrep!=NULL)
 	{
-		int size=_GetMRReplySize(reply);
-		MR_Reply *result=malloc(size);
+		int mrsize=_GetMRReplySize(reply);
+		MR_Reply *result=malloc(mrsize);
 		if (result==NULL)
 		{
 			CIPERROR(Sys_Error,errno,0);
 			free(reply);
 			return(NULL);
 		}
-		memcpy(result,mrrep,size);
+		memcpy(result,mrrep,mrsize);
 		free(reply);
 		CIPERROR(MR_Error,result->General_Status,_GetMRExtendedStatus(result));
-		if (replysize!=NULL) *replysize=size;
+		if (replysize!=NULL) *replysize=mrsize;
 		return(result);
 	}else 
 	{
