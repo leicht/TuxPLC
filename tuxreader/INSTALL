@@ -25,22 +25,11 @@ it or regenerate `configure' using a newer version of `autoconf'.
 
 The simplest way to compile this package is:
 
-  1. `cd' to the directory containing the package's source code and type
-     `./configure' to configure the package for your system.  If you're
-     using `csh' on an old version of System V, you might need to type
-     `sh ./configure' instead to prevent `csh' from trying to execute
-     `configure' itself.
-
-     Running `configure' takes a while.  While running, it prints some
-     messages telling which features it is checking for.
-
-  2. Type `make' to compile the package.
-
-  3. Type `make install' to install the programs and any data files and
-     documentation.
-
-  4. You can remove the program binaries and object files from the
-     source code directory by typing `make clean'.  
+    1. `cd` to the package's directory. 
+    2. `mkdir build` and `cd build` 
+    3.  type `cmake ..`
+    4.  type `make`
+    5.  the library is in the `lib` directory. 
 
 Compilers and Options
 =====================
