@@ -175,7 +175,7 @@ MR_Reply *_UnconnectedSend(Eip_Session *session,BYTE Priority,
 										BYTE *routepath,CIP_USINT routepathsize,int *replysize)
 { Unconnected_Send_Request *UCRequest=NULL;
 	MR_Reply *reply=NULL;
-	void *pos=NULL;
+	char *pos=NULL;
 	if ((MRrequest==NULL) && (MRrequestsize<=0))
 	{
 		CIPERROR(Internal_Error,E_NothingToSend,0);
@@ -194,7 +194,7 @@ MR_Reply *_UnconnectedSend(Eip_Session *session,BYTE Priority,
 			return(NULL);
 		};
 		memset(UCRequest,0,UCRequestsize);
-		pos=(void *)(&(UCRequest->MRRequest));
+		pos=(char *)(&(UCRequest->MRRequest));
 
 		UCRequest->Priority=Priority;//used to calculate request timeout information
 		UCRequest->TimeOut_Ticks=TimeOut_Ticks;//used to calculate request timeout information

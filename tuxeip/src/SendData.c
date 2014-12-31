@@ -20,12 +20,20 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <errno.h>
+#ifdef _MSC_VER
+	#include <io.h>
+#else
+	#include <unistd.h>
+#endif
 
 #ifdef _WIN32
-    #include <winsock2.h>
-		#define MAXFILEDESCRIPTORS FD_SETSIZE
-		#include <io.h>
-    //#define MSG_WAITALL 0
+	#include <winsock2.h>
+	#define MAXFILEDESCRIPTORS FD_SETSIZE
+	#ifdef __MINGW32__
+		#define MSG_WAITALL 8
+	#else
+		//#define MSG_WAITALL 0
+	#endif
 #else
 	#include <sys/socket.h>
 	#include <arpa/inet.h>
@@ -44,13 +52,13 @@
 int _CIPEmptyBuffer(int sock);
 char _CIPEmptyBuff[512];
 
-#ifdef _Windows
+#ifdef _WIN32
 int _InitWSA() //(WORD version)
 {
   WORD wVersionRequested;
   WSADATA wsaData;
 
-  wVersionRequested = MAKEWORD( 2, 0 );
+  wVersionRequested = MAKEWORD( 2, 2 );
   return(WSAStartup( wVersionRequested, &wsaData ));
 }
 #endif
@@ -67,13 +75,26 @@ EXPORT int _CipOpenSock(char *serveur,int port)
 	sonadr.sin_port = htons(portnum) ;
 	sonadr.sin_addr.s_addr = inet_addr(serveur);
 
+#ifdef _WIN32
+	if (_InitWSA() != 0) return(-1);
+#endif
+
 	s = socket( PF_INET, SOCK_STREAM, 0 );//|SO_KEEPALIVE
 	if (s<0) return(-1);
 
 	/* verification du format de l'adresse donnee */
 	if( sonadr.sin_addr.s_addr != -1 )
 		{r=connect(s,(struct sockaddr *)&sonadr, sizeof(sonadr));
-			if (!r)	return(s); else {close(s);return(E_ConnectionFailed);};
+			if (!r)
+				return(s);
+			else
+			{
+				close(s);
+#ifdef _WIN32
+				WSACleanup();
+#endif
+				return(E_ConnectionFailed);
+			}
 		}
 	else
 	{	/* Le serveur est designe par nom, il faut
@@ -85,7 +106,16 @@ EXPORT int _CipOpenSock(char *serveur,int port)
 		{	memmove((char *)&(sonadr.sin_addr),(char *) hp->h_addr_list[i], sizeof(sonadr.sin_addr));
 			r=connect(s, (struct sockaddr *)&sonadr, sizeof(sonadr));
 		}
-		if (!r)	return(s); else {close(s);return(E_ConnectionFailed);};
+		if (!r)
+			return(s);
+		else
+		{
+			close(s);
+#ifdef _WIN32
+			WSACleanup();
+#endif
+			return(E_ConnectionFailed);
+		}
 	}
 }
 void _CipFlushBuffer(void *buffer,int size)

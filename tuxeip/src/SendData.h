@@ -27,7 +27,9 @@ extern "C"
 #include "TuxDef.h"
 #include "Ethernet_IP.h"
 
-#ifdef _Windows
+extern char _CIPEmptyBuff[512];
+
+#ifdef _WIN32
     int _InitWSA(); //(WORD version);
 #endif
 
@@ -44,9 +46,9 @@ extern "C"
 	#define _CipRecvData CipRecvData
 	#define _CipSendData_WaitReply CipSendData_WaitReply
 #else
-	int (*CipSendData)(int sock,Encap_Header *header);
-	Encap_Header *(*CipRecvData)(int sock,int timeout);
-	Encap_Header *(*CipSendData_WaitReply)(int sock,Encap_Header *header,int sendtimeout,int rcvtimeout);
+	extern int (*CipSendData)(int sock,Encap_Header *header);
+	extern Encap_Header *(*CipRecvData)(int sock,int timeout);
+	extern Encap_Header *(*CipSendData_WaitReply)(int sock,Encap_Header *header,int sendtimeout,int rcvtimeout);
 #endif
 
 #ifdef __cplusplus

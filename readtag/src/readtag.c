@@ -20,16 +20,22 @@
 #include <tuxeip/TuxEip.h>
 
 #include <time.h>
-#include <sys/wait.h>
 #include <unistd.h>
-#include <syslog.h>
+#ifdef _WIN32
+	enum LOG_LEVELS {LOG_ALERT=1, LOG_CRIT, LOG_ERR, LOG_WARNING, LOG_NOTICE, LOG_INFO, LOG_DEBUG};
+#else
+	#include <syslog.h>
+#endif
 #include <sys/stat.h>
 #include <stdarg.h>
-#include <setjmp.h>
 #include <stdio.h>
 #include <string.h>
 #include <errno.h>
 #include <stdlib.h>
+#include <signal.h>
+#ifdef __MINGW32__
+	#define SIGIO 29
+#endif
 
 #define LOG_TITLE "ReadTag"
 #define MAXPATHSIZE 100
@@ -95,15 +101,17 @@ if (level<=debuglevel)
 	{
 		if (debug==1)
 		{	char str[255];
-			if (format!="\n")
+			if (format[0]!='\n')
 			{
 				vsprintf(str,format,list);
-				printf("%ld : %s",time(NULL)-starttime,str);
+				printf("%ld : %s",(long)(time(NULL)-starttime),str);
 			} else vprintf(format,list);
 		}
 		else
 		{ 
+#ifndef _WIN32
 			vsyslog(level,format,list);
+#endif
 		}
 	}
 	va_end(list);
@@ -175,7 +183,7 @@ int GetPlc(char *Alias,char *Aliasfile,PLC *plc)
 				if (!strncasecmp(Temp_Alias,Alias,strlen(Alias))) // find
 				{
 					Log(LOG_DEBUG,"%s = %s (%s,%s,%d)\n",Alias,Path,Type,NetWork,Node);
-					bzero(plc,sizeof(PLC));
+					memset(plc,0,sizeof(PLC));
 					strncpy(plc->PlcName,Temp_Alias,sizeof(plc->PlcName));
 					strncpy(plc->PlcPath,Path,sizeof(plc->PlcPath));
 					plc->PlcType=GetPlcType(Type);
@@ -265,12 +273,11 @@ int Connect(PLC *Plc,char *TagName, char *responseValue)
 		{
 			if (WriteTag(Plc, Session, Connection, TagName,dataType)!=SUCCESS)
 				return ERROR; 
+			Log(LOG_DEBUG,"[Connect] %s [%s] %x (%p / %p)\n",TagName,writeValue,dataType,Session,Connection);
+			if (ReadTag(Plc, Session, Connection, TagName, &dataType, responseValue)!=SUCCESS)
+				return ERROR;
 		}
 	}
-	Log(LOG_DEBUG,"[Connect] %s [%s] %x (%p / %p)\n",TagName,writeValue,dataType,Session,Connection);
-	if (ReadTag(Plc, Session, Connection, TagName, &dataType, responseValue)!=SUCCESS)
-		return ERROR;
-	Log(LOG_DEBUG,"[Connect] %s [%s] %x (%p / %p)\n",TagName,writeValue,dataType,Session,Connection);
 	return result;
 }
 
@@ -330,7 +337,7 @@ int ReadTag(PLC *Plc, Eip_Session *Session, Eip_Connection *Connection, char *Ta
 						}
 					}break;
 					default:{
-						Log(LOG_WARNING,"[ReadTag] Datatype type unknow for : %s\n",TagName);
+						Log(LOG_WARNING,"[ReadTag] Datatype type unknown for : %s\n",TagName);
 						result=ERROR;
 					}
 					break;
@@ -409,7 +416,7 @@ int ReadTag(PLC *Plc, Eip_Session *Session, Eip_Connection *Connection, char *Ta
 			}
 		}; break;
 		default:{
-			Log(LOG_WARNING,"[ReadTag] Plc type unknow for : %s\n",Plc->PlcName);
+			Log(LOG_WARNING,"[ReadTag] Plc type unknown for : %s\n",Plc->PlcName);
 				result=ERROR;
 			}
 			break;
@@ -467,7 +474,7 @@ int WriteTag(PLC *Plc, Eip_Session *Session, Eip_Connection *Connection, char *T
 				}break;
 				default:
 				{
-					Log(LOG_WARNING,"[WriteTag] Datatype unknow for : %s\n",TagName);
+					Log(LOG_WARNING,"[WriteTag] Datatype unknown for : %s\n",TagName);
 					result=ERROR;
 				}
 				break;
@@ -514,7 +521,7 @@ int WriteTag(PLC *Plc, Eip_Session *Session, Eip_Connection *Connection, char *T
 				}break;
 				default:
 				{
-					Log(LOG_WARNING,"[WriteTag] Datatype unknow for : %s\n",TagName);
+					Log(LOG_WARNING,"[WriteTag] Datatype unknown for : %s\n",TagName);
 					result=ERROR;
 				}
 				break;
@@ -522,7 +529,7 @@ int WriteTag(PLC *Plc, Eip_Session *Session, Eip_Connection *Connection, char *T
 		}; break;
 		default:
 		{
-			Log(LOG_WARNING,"[WriteTag] Plc type unknow for : %s\n",Plc->PlcName);
+			Log(LOG_WARNING,"[WriteTag] Plc type unknown for : %s\n",Plc->PlcName);
 			result=ERROR;
 		}
 		break;
@@ -586,7 +593,7 @@ int main (int argc,char *argv[])
 				{
 					plc.NetWork=GetNetType(optarg);
 				};break;
-			case 'n': //Node adress
+			case 'n': //Node address
 				{
 					plc.Node=atoi(optarg);
 				};break;
@@ -594,7 +601,7 @@ int main (int argc,char *argv[])
 			case 'h':
 				{
 					printf("%s (Build on %s %s)\n",LOG_TITLE,__DATE__,__TIME__);
-					printf("usage: %s:[-d] [-l0-3] [-f Alias file] [-w Value] [-?,h] {-a alias || -p path -c Plc type -r network type -n node adress} var\n",argv[0]);
+					printf("usage: %s:[-d] [-l0-3] [-f Alias file] [-w Value] [-?,h] {-a alias || -p path -c Plc type -r network type -n node address} var\n",argv[0]);
 					printf("-d\tDebug mode to screen\n");
 					printf("-l{0..3}\t(default :1)\n");
 					printf("\t0\tLOG_ERR\n");
@@ -607,7 +614,7 @@ int main (int argc,char *argv[])
 					printf("-p\tPath \n");
 					printf("-c\tPlc type {LGX,PLC,SLC} (Default : LGX)\n");
 					printf("-r\tNetwork type {CNET,DHP_A,DHP_B} (Default : CNET)\n");
-					printf("-n\tNode adress (Default : 0)\n");
+					printf("-n\tNode address (Default : 0)\n");
 					return(0);
 				}break;
 			default:break;
