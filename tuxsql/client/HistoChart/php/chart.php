@@ -1,7 +1,8 @@
 <html>
 <head>
-	<title>Chart</title>
-	<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+<title>Courbe</title>
+<meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+<LINK href="treewin.css" type=text/css rel=stylesheet>
 </head>
 <body bgcolor="#b8c8fe" leftmargin="6" >
 
@@ -22,17 +23,22 @@ if (!isset($_GET['largeur']) OR !isset($_GET['hauteur'])) {
 }
 
 $MyPenColor = array ("#ff0000","#0000ff","#00ff00","#ff00ff","#00ffff","#ff8000","#008080","#800080");
+
+$query='';
+$title='';
    mysql_connect("localhost", "histosql", "histosql") or die("Impossible de se connecter : " . mysql_error());
    mysql_select_db("histosql") or die("Impossible de selectionner : " . mysql_error());
 
-if (isset($title)) {
+if (isset($_GET['title'])) {
+	$title = $_GET['title'];
 	if (strcmp($query, '') == 0) 
 		$query .= '?';
 	else
 		$query .= '&';
 	$query .="title=".$title;	
 }
-if (isset($tag0)) {
+if (isset($_GET['tag0'])) {
+	$tag0 = $_GET['tag0'];
 	if (strcmp($query, '') == 0) 
 		$query .= '?';
 	else
@@ -40,7 +46,8 @@ if (isset($tag0)) {
 	$query .="tag0=".$tag0;	
 	$tag[0]=$tag0;
 }
-if (isset($tag1)) {
+if (isset($_GET['tag1'])) {
+        $tag1 = $_GET['tag1'];
 	if (strcmp($query, '') == 0) 
 		$query .= '?';
 	else
@@ -48,7 +55,8 @@ if (isset($tag1)) {
 	$query .="tag1=".$tag1;
 	$tag[1]=$tag1;
 }
-if (isset($tag2)) {
+if (isset($_GET['tag2'])) {
+        $tag2 = $_GET['tag2'];
 	if (strcmp($query, '') == 0) 
 		$query .= '?';
 	else
@@ -56,7 +64,8 @@ if (isset($tag2)) {
 	$query .="tag2=".$tag2;
 	$tag[2]=$tag2;
 }
-if (isset($tag3)) {
+if (isset($_GET['tag3'])) {
+        $tag3 = $_GET['tag3'];
 	if (strcmp($query, '') == 0) 
 		$query .= '?';
 	else
@@ -64,8 +73,8 @@ if (isset($tag3)) {
 	$query .="tag3=".$tag3;
 	$tag[3]=$tag3;
 }
-
-if (isset($tag4)) {
+if (isset($_GET['tag4'])) {
+        $tag4 = $_GET['tag4'];
 	if (strcmp($query, '') == 0) 
 		$query .= '?';
 	else
@@ -73,7 +82,8 @@ if (isset($tag4)) {
 	$query .="tag4=".$tag4;
 	$tag[4]=$tag4;
 }
-if (isset($tag5)) {
+if (isset($_GET['tag5'])) {
+        $tag5 = $_GET['tag5'];
 	if (strcmp($query, '') == 0) 
 		$query .= '?';
 	else
@@ -81,7 +91,8 @@ if (isset($tag5)) {
 	$query .="tag5=".$tag5;
 	$tag[5]=$tag5;
 }
-if (isset($tag6)) {
+if (isset($_GET['tag6'])) {
+        $tag6 = $_GET['tag6'];
 	if (strcmp($query, '') == 0) 
 		$query .= '?';
 	else
@@ -89,7 +100,8 @@ if (isset($tag6)) {
 	$query .="tag6=".$tag6;
 	$tag[6]=$tag6;
 }
-if (isset($tag7)) {
+if (isset($_GET['tag7'])) {
+        $tag7 = $_GET['tag7'];
 	if (strcmp($query, '') == 0) 
 		$query .= '?';
 	else
@@ -97,7 +109,8 @@ if (isset($tag7)) {
 	$query .="tag7=".$tag7;
 	$tag[7]=$tag7;
 }
-if (isset($range)) {
+if (isset($_GET['range'])) {
+        $range = $_GET['range'];
 	if (strcmp($query, '') == 0) 
 		$query .= '?';
 	else
@@ -105,7 +118,10 @@ if (isset($range)) {
 	$query .="range=".$range;
 	$ran = $range;
 } else {$ran=24;}
-if (!isset($lag)) {
+
+if (isset($_GET['lag'])) {
+        $lag = $_GET['lag'];
+} else {
 	$lag=0;
 }
 if (strcmp($query, '') == 0) 
@@ -114,6 +130,8 @@ else
 	$query .= '&';
 $query .="lag=".$lag;
 if (isset($_GET['largeur']) AND isset($_GET['hauteur'])) {
+	$largeur = $_GET['largeur'];
+	$hauteur = $_GET['hauteur'];
 	$width=$largeur-140;
 	$nbrTag=0;
 	for ($i = 0; $i < 8; $i++) {
@@ -130,18 +148,18 @@ $Titre="<font face='Verdana, Arial, Helvetica, sans-serif' size=2 color=#FFFF00>
 
 $fl="<font face='Verdana, Arial, Helvetica, sans-serif' size=2>";
 
-echo '	<a href="/php/chart.php'.$query.'&range=72"><img src="'.btn($ran,72).'" border="0"></a>
-	<a href="/php/chart.php'.$query.'&range=48"><img src="'.btn($ran,48).'" border="0"></a>
-	<a href="/php/chart.php'.$query.'&range=24"><img src="'.btn($ran,24).'" border="0"></a>
-	<a href="/php/chart.php'.$query.'&range=12"><img src="'.btn($ran,12).'" border="0"></a>
-	<a href="/php/chart.php'.$query.'&range=8"><img src="'.btn($ran,8).'" border="0"></a>
-	<a href="/php/chart.php'.$query.'&range=4"><img src="'.btn($ran,4).'" border="0"></a>
-	<a href="/php/chart.php'.$query.'&range=2"><img src="'.btn($ran,2).'" border="0"></a>
-	<a href="/php/chart.php'.$query.'&range=1"><img src="'.btn($ran,1).'" border="0"></a>
+echo '	<a href="/chart.php'.$query.'&range=72"><img src="'.btn($ran,72).'" border="0"></a>
+	<a href="/chart.php'.$query.'&range=48"><img src="'.btn($ran,48).'" border="0"></a>
+	<a href="/chart.php'.$query.'&range=24"><img src="'.btn($ran,24).'" border="0"></a>
+	<a href="/chart.php'.$query.'&range=12"><img src="'.btn($ran,12).'" border="0"></a>
+	<a href="/chart.php'.$query.'&range=8"><img src="'.btn($ran,8).'" border="0"></a>
+	<a href="/chart.php'.$query.'&range=4"><img src="'.btn($ran,4).'" border="0"></a>
+	<a href="/chart.php'.$query.'&range=2"><img src="'.btn($ran,2).'" border="0"></a>
+	<a href="/chart.php'.$query.'&range=1"><img src="'.btn($ran,1).'" border="0"></a>
 	<br>';
-echo '<img src="/cgi/histochart.cgi'.$query.'" border="0"><br>';
-echo '<a href="/php/chart.php'.$query.'&lag='.($lag+1).'"><img src="backward.png" border="0"></a>&nbsp;';
-echo '<a href="/php/chart.php'.$query.'&lag='.($lag-1).'"><img src="forward.png" border="0"></a></p>';
+echo '<img src="/cgi/chart.cgi'.$query.'" border="0"><br>';
+echo '<a href="/chart.php'.$query.'&lag='.($lag+1).'"><img src="backward.png" border="0"></a>&nbsp;';
+echo '<a href="/chart.php'.$query.'&lag='.($lag-1).'"><img src="forward.png" border="0"></a></p>';
 
 
 
@@ -151,9 +169,9 @@ for ($i = 0; $i < 8; $i++) {
 	$query=mysql_query($Q) or die ("Erreur");
 	while ($row = mysql_fetch_object($query)) {
 		echo '<tr valign=middle>
-			<td bgcolor='.$MyPenColor[$i].'><a class=lien2 href="/php/chart.php?tag'.$i.'='.$tag[$i].'&lag='.($lag).'&range='.($ran).'">'.$fl.'&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</a></td>
+			<td bgcolor='.$MyPenColor[$i].'><a class=lien2 href="/chart.php?tag'.$i.'='.$tag[$i].'&lag='.($lag).'&range='.($ran).'">'.$fl.'&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</a></td>
 			<td>'.$fl.'&nbsp;&nbsp;</td>
-			<td> <a class=lien2 href="/php/chart.php?tag'.$i.'='.$tag[$i].'&lag='.($lag).'&range='.($ran).'">'.$fl.$row->TAGNAME.'</a></td>
+			<td> <a class=lien2 href="/chart.php?tag'.$i.'='.$tag[$i].'&lag='.($lag).'&range='.($ran).'">'.$fl.$row->TAGNAME.'</a></td>
 			<td>'.$fl.'&nbsp;:&nbsp;</td>
 			<td>'.$fl.$row->TAG_DEFINITION.'</td>
 			</tr>';
