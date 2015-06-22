@@ -99,14 +99,14 @@ EXPORT int _WriteLgxData(Eip_Session *session,Eip_Connection *connection,
 	WriteDataService_Request *request=_BuildLgxWriteDataRequest(adress,datatype,data,datasize,number,&requestsize);
 	Eip_CDI *DataItem=_ConnectedSend(session,connection,request,requestsize);
 	free(request);
-	if (DataItem==NULL) return(Error);
+	if (DataItem==NULL) return(E_Error);
 	rep=_GetService_Reply((Eip_Item*)DataItem,0);
-	if (rep==NULL) return(Error);
+	if (rep==NULL) return(E_Error);
 	if (rep->Status!=0)
 	{
 		CIPERROR(AB_Error,rep->Status,_GetExtendedStatus(rep));
 		free(DataItem);
-		return(Error);
+		return(E_Error);
 	}	else
 	{
 		int result=_GetService_ReplyNumber((Eip_Item*)DataItem);
@@ -242,7 +242,7 @@ EXPORT float _GetLGXValueAsFloat(LGX_Read *reply,int index)
 		return(0);
 	}
 
-	CIPERROR(Internal_Error,Success,0);
+	CIPERROR(Internal_Error,E_Success,0);
 	if (index>reply->Varcount-1) CIPERROR(Internal_Error,E_OutOfRange,0);
 
 	if (reply->mask) mask=reply->mask;
@@ -254,7 +254,7 @@ EXPORT float _GetLGXValueAsFloat(LGX_Read *reply,int index)
 		case DT_INT:value=(*((CIP_INT*)(((char*)reply)+sizeof(LGX_Read)+index*reply->elementsize)));break;
 		case DT_DINT:value=(*((CIP_DINT*)(((char*)reply)+sizeof(LGX_Read)+index*reply->elementsize)));break;
 		case DT_REAL:value=(*((float*)(((char*)reply)+sizeof(LGX_Read)+index*reply->elementsize)));break;
-		default:CIPERROR(Internal_Error,E_UnsupportedDataType,0);return(Error);
+		default:CIPERROR(Internal_Error,E_UnsupportedDataType,0);return(E_Error);
 	}
 	if (mask!=-1)
 	{
@@ -277,7 +277,7 @@ void *_GetData(CommonDataService_Reply *reply)
 		CIPERROR(AB_Error,reply->Status,_GetExtendedStatus(reply));
 		return(NULL);
 	}
-	CIPERROR(Internal_Error,Success,0);
+	CIPERROR(Internal_Error,E_Success,0);
 	switch (_GetLGXDataType(reply))
 	{
 		case LGX_BOOL:
@@ -299,7 +299,7 @@ int _GetLGXDataSize(LGX_Data_Type DataType)
 		case LGX_BITARRAY:
 		case LGX_DINT:
 		case LGX_REAL:return(sizeof(CIP_DINT));
-		default:CIPERROR(Internal_Error,E_UnsupportedDataType,0);return(Error);
+		default:CIPERROR(Internal_Error,E_UnsupportedDataType,0);return(E_Error);
 	}
 }
 LGX_Data_Type _LGXDataType(Data_Type DataType)
@@ -312,7 +312,7 @@ LGX_Data_Type _LGXDataType(Data_Type DataType)
 	case AB_DINT:return(LGX_DINT);
 	case AB_REAL:return(LGX_REAL);
 	default:
-			return(Error);
+			return(E_Error);
 
 	}
 }

@@ -141,7 +141,7 @@ int _CIPEmptyBuffer(int sock)
 			return(0);
 		case -1 ://err	;
 			CIPERROR(Sys_Error,errno,0);
-			return(Error);
+			return(E_Error);
 		default://data;
 			if (FD_ISSET(sock,&rfds))
 				{	rcv=recv(sock,(void *)(&_CIPEmptyBuff),sizeof(_CIPEmptyBuff),0);

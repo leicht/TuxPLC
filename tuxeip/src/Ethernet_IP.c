@@ -161,13 +161,13 @@ EXPORT int _RegisterSession(Eip_Session *session)
 	if ((reply=(RegisterSession_Reply*)CipRecvData(session->sock,session->timeout))==NULL)
 	{
 		CIPERROR(Internal_Error,E_TimeOut,0);
-		return(Error);
+		return(E_Error);
 	}
 	if (reply->Header.Command!=EIP_REGISTERSESSION)
 		{
 			CIPERROR(Internal_Error,E_UnsolicitedMsg,0);
 			free(reply);
-			return(Error);
+			return(E_Error);
 		}
 	CIPERROR(EIP_Error,reply->Header.Status,0);
 	if (reply->Header.Status==EIP_SUCCESS) session->Session_Handle=reply->Header.Session_Handle;
@@ -291,7 +291,7 @@ int _AddItem(Encap_Header *request,Eip_Item *item,void *data)
 	if (taille==0)
 	{
 		CIPERROR(Internal_Error,E_ItemUnknow,0);
-		return(Error);
+		return(E_Error);
 	};
 	datasize=item->Length;
 	item->Length+=taille-sizeof(Eip_Item);
@@ -348,7 +348,7 @@ int _SendData(Eip_Session *session,CIP_UINT command,
 	{
 		CIPERROR(Sys_Error,errno,0);
 		LogCip(LogTrace,"!Exiting SendData with error : %s\n",_cip_err_msg);
-		return(Error);
+		return(E_Error);
 	}
 	request->Command=command;
 	res=CipSendData(session->sock,request);
