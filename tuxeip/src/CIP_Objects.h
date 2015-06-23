@@ -25,7 +25,6 @@ extern "C"
 #endif
 
 #include "CIP_Types.h"
-#pragma pack (1)
 	
 typedef struct _List
 								{

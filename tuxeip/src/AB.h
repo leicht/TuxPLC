@@ -28,7 +28,6 @@ extern "C"
 #include "CIP_Types.h"
 #include "Ethernet_IP.h"
 #include "ErrCodes.h"
-#pragma pack (1)
 
 typedef enum _Plc_Type{Unknow,PLC5,SLC500,LGX} Plc_Type;
 typedef enum _DHP_Channel{Channel_A=0x01,Channel_B} DHP_Channel;
