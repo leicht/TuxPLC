@@ -197,7 +197,7 @@ LGX_Read *_DecodeLGX(CommonDataService_Reply *reply,int replysize)
 		free(result);
 		return(NULL);
 	}
-	result->totalsize=replysize-((int)data-(int)reply);
+	result->totalsize=replysize-((char *)data-(char *)reply);
 	result->Varcount=result->totalsize/result->elementsize;
 	if(result->Varcount<1)
 	{
