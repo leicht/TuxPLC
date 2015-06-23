@@ -42,7 +42,7 @@ extern "C"
 #else
   #ifdef __MINGW32__
     #define THREAD_VAR
-    #define PACKED __attribute__((packed))
+    #define PACKED __attribute__((gcc_struct,packed))
   #elif _MSC_VER
     #ifndef THREAD_VAR
 			#define THREAD_VAR __declspec( thread )
