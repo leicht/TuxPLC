@@ -86,8 +86,8 @@ fd_set fd_clients,fd_plc;
 char *TuxGetInternalErrMsg(unsigned int ErrorCode)
 {
 	switch (ErrorCode){
-		case Success:return("Success");
-		case Error:return("Error");
+		case E_Success:return("Success");
+		case E_Error:return("Error");
 		/*case :return("");
 		case :return("");	*/
 		default :return("Reserved for future expansion");
@@ -848,12 +848,12 @@ int WriteTag(TAG *tag, float *writeValue ) {
 				if (data!=NULL)
 				{
                                     if (tag->Plc->NetWork) { // DHP
-					if (WritePLCData(tag->Plc->Session,tag->Plc->Connection,&dhp,NULL,0,tag->Plc->PlcType,tns++,tag->TagName,data->type,writeValue,1)>Error)
+					if (WritePLCData(tag->Plc->Session,tag->Plc->Connection,&dhp,NULL,0,tag->Plc->PlcType,tns++,tag->TagName,data->type,writeValue,1)>E_Error)
                                             result=SUCCESS;
                                         else
                                             result=ERROR;
                                     } else {
-                                        if (WritePLCData(tag->Plc->Session,tag->Plc->Connection,NULL,NULL,0,tag->Plc->PlcType,tns++,tag->TagName,data->type,writeValue,1)>Error)
+                                        if (WritePLCData(tag->Plc->Session,tag->Plc->Connection,NULL,NULL,0,tag->Plc->PlcType,tns++,tag->TagName,data->type,writeValue,1)>E_Error)
                                             result=SUCCESS;
                                         else
                                             result=ERROR;
@@ -866,12 +866,12 @@ int WriteTag(TAG *tag, float *writeValue ) {
 				{
 					IValue=atoi(writeValue);
 					if (Plc->NetWork) // DHP
-						if (WritePLCData(Session,Connection,&dhp,NULL,0,Plc->PlcType,tns++,TagName,DataType,&IValue,1)>Error)
+						if (WritePLCData(Session,Connection,&dhp,NULL,0,Plc->PlcType,tns++,TagName,DataType,&IValue,1)>E_Error)
 							result=SUCCESS;
 						else
 							result=ERROR;
 					else
-					if (WritePLCData(Session,Connection,NULL,NULL,0,Plc->PlcType,tns++,TagName,DataType,&IValue,1)>Error)
+					if (WritePLCData(Session,Connection,NULL,NULL,0,Plc->PlcType,tns++,TagName,DataType,&IValue,1)>E_Error)
 							result=SUCCESS;
 						else
 							result=ERROR;
@@ -881,12 +881,12 @@ int WriteTag(TAG *tag, float *writeValue ) {
 				{
 					FValue=atof(writeValue);
 					if (Plc->NetWork) // DHP
-						if (WritePLCData(Session,Connection,&dhp,NULL,0,Plc->PlcType,tns++,TagName,DataType,&FValue,1)>Error)
+						if (WritePLCData(Session,Connection,&dhp,NULL,0,Plc->PlcType,tns++,TagName,DataType,&FValue,1)>E_Error)
 							result=SUCCESS;
 					else
 						result=ERROR;
 					else
-						if (WritePLCData(Session,Connection,NULL,NULL,0,Plc->PlcType,tns++,TagName,DataType,&FValue,1)>Error)
+						if (WritePLCData(Session,Connection,NULL,NULL,0,Plc->PlcType,tns++,TagName,DataType,&FValue,1)>E_Error)
 							result=SUCCESS;
 					else
 						result=ERROR;

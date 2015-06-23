@@ -147,7 +147,7 @@ int _BuildThreeAddressField(char* address,Three_Address_Fields *taf)
 		case 'O':
 		case 'o':filetype=TAF_OUTPUT;break;
 	}
-	if (filetype==0) return(Error);
+	if (filetype==0) return(E_Error);
 	tail=str=address+1;
 	do
 	{
@@ -582,7 +582,7 @@ EXPORT int _WritePLCData(
 		result=res->STS;
 		free(res);
 		return(result);
-	}	else return(Error);
+	}	else return(E_Error);
 }
 int _GetPLCDataSize(PLC_Data_Type DataType)
 {
@@ -596,7 +596,7 @@ int _GetPLCDataSize(PLC_Data_Type DataType)
 	case PLC_FLOATING:return(4);
 	default:
 			//*data=NULL;
-			return(Error);
+			return(E_Error);
 	}
 }
 PLC_Data_Type _PLCDataType(Data_Type DataType)
@@ -611,7 +611,7 @@ PLC_Data_Type _PLCDataType(Data_Type DataType)
 	case AB_COUNTER:return(PLC_COUNTER);
 	case AB_REAL:return(PLC_FLOATING);
 	default:
-			return(Error);
+			return(E_Error);
 	}
 }
 void *_DecodePLCDataType(PCCC_Header *reply,PLC_Data_Type *type,int *tsize,int *esize)
@@ -727,10 +727,10 @@ int _EncodePLCDataType(void **data,PLC_Data_Type type,int number)
 	char *ptr;
 	*data=NULL;
 
-	if (len==Error)
+	if (len==E_Error)
 	{
 		CIPERROR(Internal_Error,E_UnsupportedDataType,0);
-		return(Error);
+		return(E_Error);
 	} else typelen=len;
 
 	if (type>7) typeidlen=1;
@@ -902,14 +902,14 @@ EXPORT int _PCCC_GetValueAsBoolean(PLC_Read *reply,int index)
 		CIPERROR(Internal_Error,E_InvalidReply,0);
 		return(0);
 	}
-	CIPERROR(Internal_Error,Success,0);
+	CIPERROR(Internal_Error,E_Success,0);
 	if (index>reply->Varcount-1) CIPERROR(Internal_Error,E_OutOfRange,0);
 	if (reply->mask) mask=reply->mask;
 	switch (reply->type)
 	{
 		case PLC_INTEGER:value=*((CIP_INT*)((char*)reply+sizeof(PLC_Read)+index*reply->elementsize));break;
 		case PLC_FLOATING:value=*((float*)((char*)reply+sizeof(PLC_Read)+index*reply->elementsize));break;
-		default:CIPERROR(Internal_Error,E_UnsupportedDataType,0);return(Error);
+		default:CIPERROR(Internal_Error,E_UnsupportedDataType,0);return(E_Error);
 	}
 	if (mask!=-1)
 	{
@@ -924,13 +924,13 @@ EXPORT int _PCCC_GetValueAsInteger(PLC_Read *reply,int index)
 		CIPERROR(Internal_Error,E_InvalidReply,0);
 		return(0);
 	}
-	CIPERROR(Internal_Error,Success,0);
+	CIPERROR(Internal_Error,E_Success,0);
 	if (index>reply->Varcount-1) CIPERROR(Internal_Error,E_OutOfRange,0);
 	switch (reply->type)
 	{
 		case PLC_INTEGER:value=*((CIP_INT*)((char*)reply+sizeof(PLC_Read)+index*reply->elementsize));break;
 		case PLC_FLOATING:value=*((float*)((char*)reply+sizeof(PLC_Read)+index*reply->elementsize));break;
-		default:CIPERROR(Internal_Error,E_UnsupportedDataType,0);return(Error);
+		default:CIPERROR(Internal_Error,E_UnsupportedDataType,0);return(E_Error);
 	}
 	if (mask!=-1)
 	{
@@ -945,13 +945,13 @@ EXPORT float _PCCC_GetValueAsFloat(PLC_Read *reply,int index)
 		CIPERROR(Internal_Error,E_InvalidReply,0);
 		return(0);
 	}
-	CIPERROR(Internal_Error,Success,0);
+	CIPERROR(Internal_Error,E_Success,0);
 	if (index>reply->Varcount-1) CIPERROR(Internal_Error,E_OutOfRange,0);
 	switch (reply->type)
 	{
 		case PLC_INTEGER:value=*((CIP_INT*)((char*)reply+sizeof(PLC_Read)+index*reply->elementsize));break;
 		case PLC_FLOATING:value=*((float*)((char*)reply+sizeof(PLC_Read)+index*reply->elementsize));break;
-		default:CIPERROR(Internal_Error,E_UnsupportedDataType,0);return(Error);
+		default:CIPERROR(Internal_Error,E_UnsupportedDataType,0);return(E_Error);
 	}
 	if (mask!=-1)
 	{

@@ -53,6 +53,10 @@ extern "C"
     #define THREAD_VAR __declspec( thread )
     #define PACKED
     #pragma pack (1)
+  #elif __GUNC__
+    /* assuming GCC 3.4 or greater... play it safe with structure packing */
+    #define THREAD_VAR __thread
+    #define PACKED __attribute__((gcc_struct,packed))
   #else
     #define THREAD_VAR __thread
     #define PACKED __attribute__((packed))

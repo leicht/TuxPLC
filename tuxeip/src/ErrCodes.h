@@ -30,8 +30,8 @@ extern "C"
 #define MAX_CDE_LEN 20
 
 /********** Internal codes ******************/
-#define Success 0
-#define Error -1
+#define E_Success 0
+#define E_Error -1
 #define E_SeeErrorno -2
 #define E_PendingBufferFull -3
 #define E_NoMoreData -4
