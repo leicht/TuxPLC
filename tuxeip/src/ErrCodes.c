@@ -90,8 +90,8 @@ EXPORT char *cip_err_msg()
 EXPORT char *CIPGetInternalErrMsg(unsigned int ErrorCode)
 {
 	switch (ErrorCode){
-		case Success:return("Success");
-		case Error:return("Error");
+		case E_Success:return("Success");
+		case E_Error:return("Error");
 		case E_SeeErrorno:return("System error");
 		case E_PendingBufferFull:return("Pending Buffer Full");
 		case E_NoMoreData:return("No More Data");

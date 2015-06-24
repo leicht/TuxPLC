@@ -84,8 +84,8 @@ fd_set fd_clients,fd_plc;
 char *TuxGetInternalErrMsg(unsigned int ErrorCode)
 {
 	switch (ErrorCode){
-		case Success:return("Success");
-		case Error:return("Error");
+		case E_Success:return("Success");
+		case E_Error:return("Error");
 		/*case :return("");
 		case :return("");	*/
 		default :return("Reserved for future expansion");

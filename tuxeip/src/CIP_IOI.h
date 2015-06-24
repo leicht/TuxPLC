@@ -26,7 +26,6 @@ extern "C"
 
 #include "TuxDef.h"
 #include "CIP_Types.h"
-#pragma pack (1)
 
 /************* Classes : See CIP Common spec Vol.1/Ch 5. *****************/
 

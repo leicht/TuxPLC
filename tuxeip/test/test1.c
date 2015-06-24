@@ -63,7 +63,7 @@ int main(int argc,char *argv[])
 	printf("entering RegisterSession \n");
 	res=RegisterSession(session);
 
-	if (res!=Error)
+	if (res!=E_Error)
 	{ int i,val_int;
 		float val_float;
 		printf("RegisterSession Ok\n");
@@ -106,12 +106,12 @@ int main(int argc,char *argv[])
 			val_int++;
 			printf("Writing %s=%d\n",var,val_int);
 			res=WriteLgxData(session,connection,var,LGX_INT,&val_int,1);
-			if(res!=Error) printf("WriteData Ok\n");
+			if(res!=E_Error) printf("WriteData Ok\n");
 				else printf("Error : WriteData %s (%d:%d)\n",cip_err_msg,cip_errno,cip_ext_errno);
 				
 			printf("entering Forward_Close\n");
 			res=Forward_Close(connection);
-			if (res!=Error)	printf("Forward_Close %s\n",cip_err_msg);
+			if (res!=E_Error)	printf("Forward_Close %s\n",cip_err_msg);
 				else printf("Error : Forward_Close %s (%d:%d)\n",cip_err_msg,cip_errno,cip_ext_errno);
 		} else
 		{

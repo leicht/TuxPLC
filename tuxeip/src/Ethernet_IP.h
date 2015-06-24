@@ -26,7 +26,6 @@ extern "C"
 
 #include "TuxDef.h"
 #include "CIP_Types.h"
-#pragma pack (1)
 
 typedef CIP_UINT Eip_Command;
 
@@ -40,7 +39,7 @@ typedef struct _Encap_Header{
                 CIP_DINT Sender_ContextL,Sender_ContextH;// information pertinent only to the sender of then command
                 CIP_UDINT Option; //option flag
                 //ByteArray Data;//data portion
-							 }PACKED Encap_Header;
+                }PACKED Encap_Header;
 
 typedef struct _Eip_Item{
 		CIP_UINT Type_Id; // type of item encapsulated
@@ -70,7 +69,8 @@ typedef struct _Service_Information{
                        CIP_UINT ItemLength;
                        CIP_UINT Protocol_Version; // version of encapsulated protocol shall be set to 1
                        CIP_UINT Capability_Flags;
-											 char Name[16];}PACKED Service_Information;
+                       char Name[16];
+                       }PACKED Service_Information;
 
 typedef struct _Identity_Information{
                          CIP_UINT ItemTypeCode; //0x000C

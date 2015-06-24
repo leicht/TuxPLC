@@ -132,7 +132,7 @@ int _ExForward_Close(Eip_Session *session,CIP_USINT Priority,
 	if (request==NULL)
 	{
 		CIPERROR(Sys_Error,errno,0);
-		return(Error);
+		return(E_Error);
 	}
 	memset(request,0,requestsize);
 	request->Priority=Priority;//used to calculate request timeout information
@@ -154,7 +154,7 @@ int _ExForward_Close(Eip_Session *session,CIP_USINT Priority,
 		return(status);
 	} else
 	{
-		return(Error);
+		return(E_Error);
 	}
 }
 EXPORT int _Forward_Close(Eip_Connection *connection)

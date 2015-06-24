@@ -43,7 +43,7 @@ int _GetMRDataSize(Encap_Header *header)
 {	int size=_GetMRReplySize(header);
 	MR_Reply *reply=_GetMRReply(header);
 	if (reply!=NULL) return(size-sizeof(MR_Reply)-2*(reply->Add_Status_Size));
-		else return(Error);
+		else return(E_Error);
 }
 MR_Reply *_GetMRReply(Encap_Header *header)
 { Eip_Item *dataitem=_GetDataItem(header);

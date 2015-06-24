@@ -28,7 +28,6 @@ extern "C"
 #include "CIP_Types.h"
 #include "Ethernet_IP.h"
 #include "MR.h"
-#pragma pack (1)
 
 #define MAX_PATH_SIZE 512
 
@@ -156,7 +155,7 @@ typedef struct _Connection{
 		BYTE *Consumed_connection_path;
 		CIP_UINT Production_inhibit_time;
 		CIP_USINT Connection_timeout_multiplier;
-	}PACKED Connection;
+	}Connection;
 
 /****************** Declaration of global var *********************/
 

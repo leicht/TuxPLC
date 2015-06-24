@@ -446,12 +446,12 @@ int WriteTag(PLC *Plc, Eip_Session *Session, Eip_Connection *Connection, char *T
 				{
 					IValue=atoi(writeValue);
 					if (Plc->NetWork) // DHP
-						if (WritePLCData(Session,Connection,&dhp,NULL,0,Plc->PlcType,tns++,TagName,DataType,&IValue,1)>Error)
+						if (WritePLCData(Session,Connection,&dhp,NULL,0,Plc->PlcType,tns++,TagName,DataType,&IValue,1)>E_Error)
 							result=SUCCESS;
 						else
 							result=ERROR;
 					else
-					if (WritePLCData(Session,Connection,NULL,NULL,0,Plc->PlcType,tns++,TagName,DataType,&IValue,1)>Error)
+					if (WritePLCData(Session,Connection,NULL,NULL,0,Plc->PlcType,tns++,TagName,DataType,&IValue,1)>E_Error)
 							result=SUCCESS;
 						else
 							result=ERROR;
@@ -461,12 +461,12 @@ int WriteTag(PLC *Plc, Eip_Session *Session, Eip_Connection *Connection, char *T
 				{
 					FValue=atof(writeValue);
 					if (Plc->NetWork) // DHP
-						if (WritePLCData(Session,Connection,&dhp,NULL,0,Plc->PlcType,tns++,TagName,DataType,&FValue,1)>Error)
+						if (WritePLCData(Session,Connection,&dhp,NULL,0,Plc->PlcType,tns++,TagName,DataType,&FValue,1)>E_Error)
 							result=SUCCESS;
 					else
 						result=ERROR;
 					else
-						if (WritePLCData(Session,Connection,NULL,NULL,0,Plc->PlcType,tns++,TagName,DataType,&FValue,1)>Error)
+						if (WritePLCData(Session,Connection,NULL,NULL,0,Plc->PlcType,tns++,TagName,DataType,&FValue,1)>E_Error)
 							result=SUCCESS;
 					else
 						result=ERROR;

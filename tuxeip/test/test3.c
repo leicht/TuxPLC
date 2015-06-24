@@ -69,7 +69,7 @@ int main(int argc,char *argv[])
 	printf("entering RegisterSession \n");
 	res=RegisterSession(session);
 
-	if (res!=Error)
+	if (res!=E_Error)
 	{ int i,val_int,val_bool;
 	float val_float;
 	if (Connected_Mode)
@@ -117,7 +117,7 @@ int main(int argc,char *argv[])
 		{
 			printf("entering Forward_Close\n");
 			res=Forward_Close(connection);
-			if (res!=Error)	printf("Forward_Close %s\n",cip_err_msg);
+			if (res!=E_Error)	printf("Forward_Close %s\n",cip_err_msg);
 			else printf("Error : Forward_Close %s (%d:%d)\n",cip_err_msg,cip_errno,cip_ext_errno);
 		}
 	} else

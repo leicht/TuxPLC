@@ -19,4 +19,4 @@ add_executable(
 	${source_files}
 )
 
-TARGET_LINK_LIBRARIES(histochart gd cgic sutil mysqlclient)
+TARGET_LINK_LIBRARIES(histochart gd cgic sutil mysqlclient m)
