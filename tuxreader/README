@@ -1,3 +1,5 @@
+(For English, see README-en_US.md)
+
 pour compiler :
 # mv ../sutil/lib/libsutil.a /usr/local/lib/
 # ln -s /home/leicht/Programmes/fox/tuxplc/sutil/src /usr/local/include/sutil
