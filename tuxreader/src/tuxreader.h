@@ -81,8 +81,6 @@ typedef struct _TAG
 		time_t Time_Value;
 	} TAG;
 
-//typedef enum _Tux_Error_type{Tux_Internal_Error=100,Tux_Sys_Error,Tux_Cip_Error} Tux_Error_type;
-
 /******************* Global Var ************************************/
 
 extern unsigned int Tux_errno;
@@ -102,7 +100,12 @@ extern LISTE CONNECTIONs;
 char *TuxGetInternalErrMsg(unsigned int ErrorCode);
 char *TuxGetErrMsg(int s_err_type,unsigned int s_errno,unsigned int ext_errno);
 
-#define TUXERROR(type,no,ext_no) {Tux_err_type=type;Tux_errno=no;Tux_ext_errno=ext_no;memcpy(&Tux_err_msg,GetErrMsg(Tux_err_type,Tux_errno,Tux_ext_errno),MAX_ERR_MSG_LEN);}
+#define TUXERROR(type,no,ext_no) {\
+	Tux_err_type=type;\
+	Tux_errno=no;\
+	Tux_ext_errno=ext_no;\
+	memcpy(&Tux_err_msg, GetErrMsg(Tux_err_type,Tux_errno,Tux_ext_errno), MAX_ERR_MSG_LEN);\
+}
 
 int GetPlc(LISTE *PLC_List,char *Aliasfile);
 void CloseList(LISTE *List);
