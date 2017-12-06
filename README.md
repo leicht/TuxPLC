@@ -2,7 +2,8 @@ TuxPLC
 ========
 
 This package contains utilitis for communicating with a programmable logic controller
-([PLC]()) from a Linux environment. The following utilities are included:
+([PLC](https://en.wikipedia.org/wiki/Programmable_logic_controller)) from a Linux
+environment. The following utilities are included:
 
 * *tuxeip*: Ethernet/IP Library
 * *tuxsql*: datalogging software
